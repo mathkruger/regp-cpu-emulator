@@ -1,0 +1,24 @@
+{
+  "name": "regp-cpu-emulator",
+  "version": "1.0.0",
+  "description": "A fantasy computer emulator, to study how to implement CPU emulators in javascript",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mathkruger/regp-cpu-emulator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mathkruger/regp-cpu-emulator/issues"
+  },
+  "homepage": "https://github.com/mathkruger/regp-cpu-emulator#readme",
+  "dependencies": {
+    "readline-sync": "^1.4.10"
+  }
+}
