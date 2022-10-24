@@ -1,11 +1,11 @@
-PRINTS "How many?"
+PRINTS "HOW MANY?"
 SCAN R0
 
-; calling the calc fibonacci address
-CALL .calc_fib
+; CALLING THE CALC FIBONACCI ADDRESS
+CALL .CALC_FIB
 HALT
 
-.calc_fib:
+.CALC_FIB:
 PUSH R0
 
 MOVV R0 0
@@ -13,7 +13,7 @@ MOVV R1 1
 MOVV R3 1
 PRINT R1
 
-.repeat:
+.REPEAT:
 MOVR R2 R0
 ADD R2 R1
 PRINT R2
@@ -27,8 +27,8 @@ ADD R3 R2
 POP R2
 PUSH R2
 
-; looping to repeat
-JL R3 R2 .repeat
+; LOOPING TO REPEAT
+JL R3 R2 .REPEAT
 
 POP R0
 

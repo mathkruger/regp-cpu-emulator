@@ -1,6 +1,9 @@
 import { INSTRUCTIONS, STRING_STOPPER } from "../common/instructions.js";
 import * as readline from "readline-sync";
 import { createCanvas } from "canvas";
+import { writeFileSync } from "fs";
+
+const isDebug = process.argv[3] === "debug";
 
 const regpCPU = {
     regs: [0, 0, 0, 0],
@@ -10,8 +13,9 @@ const regpCPU = {
     program: [],
     canvas: null,
     canvasCtx: null,
-    font: "10px Monospace",
-    color: "rgb(255,255,255)",
+    font: "10px Monospace white",
+    color: "white",
+    screenOutput: "output.png",
     
     load(program) {
         this.program = program;
@@ -124,13 +128,17 @@ const regpCPU = {
 
             case INSTRUCTIONS.CLS:
                 this.pc++;
-                console.clear();
+
+                if (!isDebug) {
+                    console.clear();
+                }
             break;
 
             case INSTRUCTIONS.GMOD:
                 this.pc++;
                 this.canvas = createCanvas(200, 200);
                 this.canvasCtx = this.canvas.getContext("2d");
+
                 this.canvasCtx.strokeStyle = this.color;
                 this.canvasCtx.font = this.font;
             break;
@@ -142,6 +150,8 @@ const regpCPU = {
                 var size = this.program[this.pc++];
                 
                 this.canvasCtx.fillRect(xPos, yPos, size, size);
+
+                this.writeScreen();
             break;
 
             case INSTRUCTIONS.TPLOT:
@@ -150,12 +160,31 @@ const regpCPU = {
                 var yPos = this.program[this.pc++];
                 var text = this.readString();
 
-                ctx.fillText(text, xPos, yPos);
+                this.canvasCtx.fillText(text, xPos, yPos);
+
+                this.writeScreen();
+            break;
+
+            case INSTRUCTIONS.BKG:
+                this.pc++;
+                var color = this.readString();
+
+                this.canvasCtx.fillStyle = color.toLowerCase();
+                this.canvasCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                this.canvasCtx.fillStyle = this.color;
+
+                this.writeScreen();
             break;
 
             case INSTRUCTIONS.HALT:
                 this.pc++;
                 this.halted = true;
+            break;
+
+            case INSTRUCTIONS.TMOD:
+                this.pc++;
+                this.canvas = null;
+                this.canvasCtx = null;
             break;
 
             default:
@@ -174,6 +203,10 @@ const regpCPU = {
         }
 
         return totalString;
+    },
+    writeScreen() {
+        const buf = this.canvas.toBuffer();
+        writeFileSync(this.screenOutput, buf);
     }
 }
 

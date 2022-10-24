@@ -1,3 +1,0 @@
-GMOD
-PLOT 10 10 5
-HALT

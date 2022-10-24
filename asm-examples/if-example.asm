@@ -1,19 +1,21 @@
+PRINTS "INPUT THE FIRST NUMBER"
 SCAN R0
+PRINTS "INPUT THE SECOND NUMBER"
 SCAN R1
 
-; if R0 < R1 then goto .minor
-JL R0 R1 .minor
+; IF R0 < R1 THEN GOTO .MINOR
+JL R0 R1 .MINOR
 
-; else goto .bigger
-JP .bigger
+; ELSE GOTO .BIGGER
+JP .BIGGER
 
-.exit:
+.MINOR:
+PRINTS "SECOND NUMBER IS BIGGER"
+JP .EXIT
+
+.BIGGER:
+PRINTS "FIRST NUMBER IS BIGGER"
+JP .EXIT
+
+.EXIT:
 HALT
-
-.minor:
-PRINTS "primeiro menor que segundo"
-JP .exit
-
-.bigger:
-PRINTS "primeiro maior que segundo"
-JP .exit

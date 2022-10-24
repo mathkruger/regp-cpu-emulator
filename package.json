@@ -21,7 +21,8 @@
   "homepage": "https://github.com/mathkruger/regp-cpu-emulator#readme",
   "dependencies": {
     "canvas": "^2.10.1",
-    "readline-sync": "^1.4.10"
+    "readline-sync": "^1.4.10",
+    "terminal-image": "^2.0.0"
   },
   "devDependencies": {
     "jest": "^29.2.1"
