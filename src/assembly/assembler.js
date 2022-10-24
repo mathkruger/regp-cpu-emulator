@@ -3,7 +3,6 @@ import { INSTRUCTIONS, REGISTERS } from "../common/instructions.js";
 const ASM = {
     assemble(code) {
         var tokens = this.getTokens(code).map(x => x.filter(y => y != " "));
-        console.log(tokens);
         return this.getBytecode(tokens);
     },
 
@@ -71,7 +70,6 @@ const ASM = {
 
                             if (address > -1) {
                                 bytes.push(parseInt(address));
-                                console.log(tokens);
                             }
                         }
 
