@@ -2,17 +2,22 @@ SCAN R0
 SCAN R1
 
 ; if R0 < R1 then goto .minor
-JL R0 R1 13
+JL R0 R1 11
 
-; if R1 < R0 then goto .bigger
-JL R1 R0 44
+; else goto .bigger
+JP 42
 
+; .exit
 HALT
 
 ; .minor
 PRINTS "primeiro menor que segundo"
-JP 12
+
+; goto .exit
+JP 10
 
 ; .bigger
 PRINTS "primeiro maior que segundo"
-JP 12
+
+; goto .exit
+JP 10
