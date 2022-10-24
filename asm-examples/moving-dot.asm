@@ -1,5 +1,3 @@
-CLS
-
 GMOD
-TPLOT 30 40 "matheus kruger"
+PLOT 10 10 5
 HALT

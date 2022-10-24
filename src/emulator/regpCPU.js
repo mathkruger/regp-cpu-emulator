@@ -1,6 +1,6 @@
 import { INSTRUCTIONS, STRING_STOPPER } from "../common/instructions.js";
 import * as readline from "readline-sync";
-import { Canvas } from "terminal-canvas";
+import { createCanvas } from "canvas";
 
 const regpCPU = {
     regs: [0, 0, 0, 0],
@@ -8,7 +8,10 @@ const regpCPU = {
     pc: 0,
     halted: false,
     program: [],
-    screen: null,
+    canvas: null,
+    canvasCtx: null,
+    font: "10px Monospace",
+    color: "rgb(255,255,255)",
     
     load(program) {
         this.program = program;
@@ -126,14 +129,19 @@ const regpCPU = {
 
             case INSTRUCTIONS.GMOD:
                 this.pc++;
-                this.screen = new Canvas();
+                this.canvas = createCanvas(200, 200);
+                this.canvasCtx = this.canvas.getContext("2d");
+                this.canvasCtx.strokeStyle = this.color;
+                this.canvasCtx.font = this.font;
             break;
 
             case INSTRUCTIONS.PLOT:
                 this.pc++;
                 var xPos = this.program[this.pc++];
                 var yPos = this.program[this.pc++];
-                this.screen.moveTo(xPos, yPos).write(".").flush();
+                var size = this.program[this.pc++];
+                
+                this.canvasCtx.fillRect(xPos, yPos, size, size);
             break;
 
             case INSTRUCTIONS.TPLOT:
@@ -141,7 +149,8 @@ const regpCPU = {
                 var xPos = this.program[this.pc++];
                 var yPos = this.program[this.pc++];
                 var text = this.readString();
-                this.screen.moveTo(xPos, yPos).write(text).flush();
+
+                ctx.fillText(text, xPos, yPos);
             break;
 
             case INSTRUCTIONS.HALT:
