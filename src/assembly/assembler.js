@@ -37,8 +37,7 @@ const ASM = {
                         bytes.push(REGISTERS[token])
                     }
                     else {
-                        console.log(token);
-                        if (parseInt(token) == NaN || token.includes("\"")) {
+                        if (token.includes("\"")) {
                             const chars = token.split("");
                             const charCodes = chars.map(x => x.charCodeAt());
                             bytes.push(...charCodes);
