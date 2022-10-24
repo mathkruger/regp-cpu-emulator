@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -20,5 +21,8 @@
   "homepage": "https://github.com/mathkruger/regp-cpu-emulator#readme",
   "dependencies": {
     "readline-sync": "^1.4.10"
+  },
+  "devDependencies": {
+    "jest": "^29.2.1"
   }
 }
