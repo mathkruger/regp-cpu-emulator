@@ -13,10 +13,13 @@ const INSTRUCTIONS = {
     "PRINT": 60,
     "PRINTS": 61,
     "SCAN": 62,
+    "CLS": 70,
+    "GMOD": 80,
+    "PLOT": 81,
+    "TPLOT": 82,
     "HALT": 255
 };
 
-var STRING_STOPPER = "\"".charCodeAt();
 
 const REGISTERS = {
     "R0": 0,
@@ -24,6 +27,8 @@ const REGISTERS = {
     "R2": 2,
     "R3": 3
 };
+
+const STRING_STOPPER = "\"".charCodeAt();
 
 export {
     INSTRUCTIONS,

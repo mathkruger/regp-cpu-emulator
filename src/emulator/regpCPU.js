@@ -1,5 +1,6 @@
 import { INSTRUCTIONS, STRING_STOPPER } from "../common/instructions.js";
 import * as readline from "readline-sync";
+import { Canvas } from "terminal-canvas";
 
 const regpCPU = {
     regs: [0, 0, 0, 0],
@@ -7,6 +8,7 @@ const regpCPU = {
     pc: 0,
     halted: false,
     program: [],
+    screen: null,
     
     load(program) {
         this.program = program;
@@ -106,15 +108,8 @@ const regpCPU = {
 
             case INSTRUCTIONS.PRINTS:
                 this.pc++;
-                var totalString = "";
-
-                if (this.program[this.pc++] === STRING_STOPPER) {
-                    while(this.program[this.pc++] !== STRING_STOPPER) {
-                        totalString += String.fromCharCode(this.program[this.pc-1]);
-                    }
-                }
-
-                console.log(totalString);
+                var text = this.readString();
+                console.log(text);
             break;
 
             case INSTRUCTIONS.SCAN:
@@ -122,6 +117,31 @@ const regpCPU = {
                 var register = this.program[this.pc++];
                 var userInput = readline.question("");
                 this.regs[register] = parseInt(userInput);
+            break;
+
+            case INSTRUCTIONS.CLS:
+                this.pc++;
+                console.clear();
+            break;
+
+            case INSTRUCTIONS.GMOD:
+                this.pc++;
+                this.screen = new Canvas();
+            break;
+
+            case INSTRUCTIONS.PLOT:
+                this.pc++;
+                var xPos = this.program[this.pc++];
+                var yPos = this.program[this.pc++];
+                this.screen.moveTo(xPos, yPos).write(".").flush();
+            break;
+
+            case INSTRUCTIONS.TPLOT:
+                this.pc++;
+                var xPos = this.program[this.pc++];
+                var yPos = this.program[this.pc++];
+                var text = this.readString();
+                this.screen.moveTo(xPos, yPos).write(text).flush();
             break;
 
             case INSTRUCTIONS.HALT:
@@ -134,6 +154,17 @@ const regpCPU = {
                 process.exit(instr);
             break;
         }
+    },
+    readString() {
+        var totalString = "";
+
+        if (this.program[this.pc++] === STRING_STOPPER) {
+            while(this.program[this.pc++] !== STRING_STOPPER) {
+                totalString += String.fromCharCode(this.program[this.pc-1]);
+            }
+        }
+
+        return totalString;
     }
 }
 
