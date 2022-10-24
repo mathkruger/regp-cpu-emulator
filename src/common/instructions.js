@@ -8,6 +8,7 @@ const INSTRUCTIONS = {
     "JP": 40,
     "JL": 41,
     "CALL": 42,
+    "FLAG": 43,
     "RET": 50,
     "PRINT": 60,
     "PRINTS": 61,

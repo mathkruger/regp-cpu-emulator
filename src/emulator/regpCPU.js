@@ -87,6 +87,11 @@ const regpCPU = {
                 this.pc = address;
             break;
 
+            case INSTRUCTIONS.FLAG:
+                // does nothing, just means that a flag was called
+                this.pc++;
+            break;
+
             case INSTRUCTIONS.RET:
                 this.pc++;
                 var address = this.stack.pop();

@@ -3,6 +3,7 @@ import { INSTRUCTIONS, REGISTERS } from "../common/instructions.js";
 const ASM = {
     assemble(code) {
         var tokens = this.getTokens(code).map(x => x.filter(y => y != " "));
+        console.log(tokens);
         return this.getBytecode(tokens);
     },
 
@@ -30,20 +31,56 @@ const ASM = {
                 const token = item.trim().toUpperCase();
 
                 if (i === 0) {
-                    bytes.push(INSTRUCTIONS[token] || -1);
+                    // Check if it's not a flag (definition or call)
+                    if (!token.startsWith(".") && !token.includes(":")) {
+                        bytes.push(INSTRUCTIONS[token] || -1);
+                    }
+
+                    // Checks if it's a flag definition, then add the FLAG instruction
+                    else if (token.startsWith(".") && token.includes(":")){
+                        bytes.push(INSTRUCTIONS.FLAG);
+                    }
                 }
                 else {
                     if (Object.keys(REGISTERS).includes(token)) {
-                        bytes.push(REGISTERS[token])
+                        bytes.push(REGISTERS[token]);
                     }
                     else {
+                        // Check strings and push all ASCII Codes for it
                         if (token.includes("\"")) {
                             const chars = token.split("");
                             const charCodes = chars.map(x => x.charCodeAt());
                             bytes.push(...charCodes);
                         }
+                        
+                        // Check if its a flag call, find its position and push it,
+                        // counting the strings lenghts as well
+                        else if (token.startsWith(".") && !token.includes(":")) {
+                            const tokensFlatten = tokens.flatMap(x => x);
+
+                            const listToFind = tokensFlatten.map(x => {
+                                if (x.includes("\"")) {
+                                    return x.split("");
+                                }
+                                return x;
+                            }).flatMap(x => x);
+
+                            const address = listToFind.findIndex(x => {
+                                return token + ":" == x.toUpperCase()
+                            });
+
+                            if (address > -1) {
+                                bytes.push(parseInt(address));
+                                console.log(tokens);
+                            }
+                        }
+
+                        // Check if it's not a flag definition, if not, just push the
+                        // value.
                         else {
-                            bytes.push(parseInt(token));
+                            if (!token.includes(":")) {
+                                bytes.push(parseInt(token));
+                            }
                         }
                     }
                 }
