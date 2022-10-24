@@ -2,7 +2,7 @@ import { INSTRUCTIONS, REGISTERS } from "../common/instructions.js";
 
 const ASM = {
     assemble(code) {
-        var tokens = this.getTokens(code).map(x => x.filter(y => y != " "));
+        var tokens = this.getTokens(code);
         return this.getBytecode(tokens);
     },
 
@@ -19,7 +19,7 @@ const ASM = {
             lines[index] = element.split(/([\s,])(?=(?:[^\"]|\"[^\"]*\")*$)/);
         }
 
-        return lines;
+        return lines.map(x => x.filter(y => y != " "));
     },
 
     getBytecode(tokens) {

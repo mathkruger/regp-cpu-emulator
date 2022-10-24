@@ -1,10 +1,12 @@
+import { readFileSync } from "fs";
+
 import { regpCPU } from "./emulator/regpCPU.js";
 import { ASM } from "./assembly/assembler.js";
-import { readFileSync } from "fs";
 
 try {
     const fileName = process.argv[2];
     const isDebug  = process.argv[3] === "debug";
+    
     const program  = readFileSync(fileName, "utf-8");
     const bytes    = ASM.assemble(program);
 
