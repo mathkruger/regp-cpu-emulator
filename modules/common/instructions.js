@@ -1,5 +1,4 @@
 const INSTRUCTIONS = {
-    "TMOD": 9,
     "MOVR": 10,
     "MOVV": 11,
     "ADD": 20,
@@ -15,9 +14,7 @@ const INSTRUCTIONS = {
     "PRINTS": 61,
     "SCAN": 62,
     "CLS": 70,
-    "GMOD": 80,
     "PLOT": 81,
-    "TPLOT": 82,
     "BKG": 83,
     "HALT": 255
 };

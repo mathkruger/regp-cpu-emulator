@@ -1,0 +1,31 @@
+:root {
+    --background-color: #222225;
+    --page-width: 75em;
+    --font-color: #e8e9ed;
+    --invert-font-color: #222225;
+    --secondary-color: #a3abba;
+    --tertiary-color: #a3abba;
+    --primary-color: #62c4ff;
+    --error-color: #ff3c74;
+    --progress-bar-background: #3f3f44;
+    --progress-bar-fill: #62c4ff;
+    --code-bg-color: #3f3f44;
+}
+
+.regp-terminal {
+    margin-top: 20px;
+}
+
+.app-container {
+    display: flex;
+    gap: 20px;
+    padding-top: 20px;
+}
+
+.app-container > * {
+    width: 100%;
+}
+
+.closed {
+    display: none !important;
+}

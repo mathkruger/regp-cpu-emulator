@@ -1,9 +1,4 @@
 import { INSTRUCTIONS, STRING_STOPPER } from "../common/instructions.js";
-import * as readline from "readline-sync";
-import { createCanvas } from "canvas";
-import { writeFileSync } from "fs";
-
-const isDebug = process.argv[3] === "debug";
 
 const regpCPU = {
     regs: [0, 0, 0, 0],
@@ -11,23 +6,41 @@ const regpCPU = {
     pc: 0,
     halted: false,
     program: [],
-    canvas: null,
-    canvasCtx: null,
     font: "10px Monospace white",
     color: "white",
-    screenOutput: "output.png",
+    outputObject: null,
+    input: null,
+
+    reset() {
+        this.regs = [0, 0, 0, 0];
+        this.stack = [];
+        this.pc = 0;
+        this.halted = false;
+        this.program = [];
+        this.canvas = null;
+        this.canvasCtx = null;
+    },
     
-    load(program) {
+    load(program, output, input) {
+        if (output) {
+            this.output = output;
+        }
+        
+        if (input) {
+            this.input = input;
+        }
+
+        this.reset();
         this.program = program;
     },
 
-    run() {
+    async run() {
         while (!this.halted) {
-            this.runOne();
+            await this.runOne();
         }
     },
 
-    runOne() {
+    async runOne() {
         if (this.halted) return;
 
         const instr = this.program[this.pc];
@@ -110,37 +123,25 @@ const regpCPU = {
             case INSTRUCTIONS.PRINT:
                 this.pc++;
                 var register = this.program[this.pc++];
-                console.log(this.regs[register]);
+                this.output.log(this.regs[register]);
             break;
 
             case INSTRUCTIONS.PRINTS:
                 this.pc++;
                 var text = this.readString();
-                console.log(text);
+                this.output.log(text);
             break;
 
             case INSTRUCTIONS.SCAN:
                 this.pc++;
                 var register = this.program[this.pc++];
-                var userInput = readline.question("");
+                var userInput = await this.input("");
                 this.regs[register] = parseInt(userInput);
             break;
 
             case INSTRUCTIONS.CLS:
                 this.pc++;
-
-                if (!isDebug) {
-                    console.clear();
-                }
-            break;
-
-            case INSTRUCTIONS.GMOD:
-                this.pc++;
-                this.canvas = createCanvas(200, 200);
-                this.canvasCtx = this.canvas.getContext("2d");
-
-                this.canvasCtx.strokeStyle = this.color;
-                this.canvasCtx.font = this.font;
+                this.output.clear();
             break;
 
             case INSTRUCTIONS.PLOT:
@@ -149,31 +150,17 @@ const regpCPU = {
                 var yPos = this.program[this.pc++];
                 var size = this.program[this.pc++];
                 
-                this.canvasCtx.fillRect(xPos, yPos, size, size);
-
-                this.writeScreen();
-            break;
-
-            case INSTRUCTIONS.TPLOT:
-                this.pc++;
-                var xPos = this.program[this.pc++];
-                var yPos = this.program[this.pc++];
-                var text = this.readString();
-
-                this.canvasCtx.fillText(text, xPos, yPos);
-
-                this.writeScreen();
+                // this.canvasCtx.fillRect(xPos, yPos, size, size);
             break;
 
             case INSTRUCTIONS.BKG:
                 this.pc++;
                 var color = this.readString();
 
-                this.canvasCtx.fillStyle = color.toLowerCase();
-                this.canvasCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-                this.canvasCtx.fillStyle = this.color;
+                // this.canvasCtx.fillStyle = color.toLowerCase();
+                // this.canvasCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                // this.canvasCtx.fillStyle = this.color;
 
-                this.writeScreen();
             break;
 
             case INSTRUCTIONS.HALT:
@@ -181,15 +168,9 @@ const regpCPU = {
                 this.halted = true;
             break;
 
-            case INSTRUCTIONS.TMOD:
-                this.pc++;
-                this.canvas = null;
-                this.canvasCtx = null;
-            break;
-
             default:
                 console.error("Instruction not recognized: " + instr);
-                process.exit(instr);
+                this.halted = true;
             break;
         }
     },
@@ -203,10 +184,6 @@ const regpCPU = {
         }
 
         return totalString;
-    },
-    writeScreen() {
-        const buf = this.canvas.toBuffer();
-        writeFileSync(this.screenOutput, buf);
     }
 }
 

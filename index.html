@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REGP Emulator</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/terminal.css@0.7.2/dist/terminal.min.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    
+    <link rel="stylesheet" href="css/styles.css" />
+    <script async defer type="module" src="index.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="regp-terminal">
+            <div class="terminal-card">
+                <header>REGP Terminal</header>
+                
+                <div>
+                    <textarea readonly class="results" cols="30" rows="10"></textarea>
+                    <input class="terminal-input" type="text" placeholder="DATA INPUT" />
+                </div>
+            </div>
+        </div>
+
+        <div class="app-container">
+            <div class="terminal-card">
+                <header>Editor</header>
+
+                <div>
+                    <textarea class="code-editor" cols="30" rows="10"></textarea>
+                    <button class="btn btn-default btn-ghost assemble">Assemble</button>
+                    <button class="btn btn-default btn-ghost assemble-run">Assemble + Run</button>
+                </div>
+            </div>
+
+            <div class="terminal-card">
+                <header>Bytecodes</header>
+
+                <div>
+                    <textarea class="bytecodes-editor" cols="30" rows="10"></textarea>
+                    <button class="btn btn-primary btn-ghost run">Run</button>
+                    <button class="btn btn-error btn-ghost disassemble">Disassemble</button>
+                </div>
+            </div>
+        </div>
+        <div class="disassemble-container closed">
+            <pre class="disassemble-result"></pre>
+            <button class="btn btn-error btn-ghost close-disassemble-panel">Close</button>
+        </div>
+    </div>
+</body>
+
+</html>

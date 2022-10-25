@@ -6,6 +6,8 @@ const DSM = {
     asmCode: [],
 
     disassemble(byteCodes) {
+        this.pc = 0;
+        this.asmCode = [];
         this.byteCodes = byteCodes;
         
         do {
@@ -263,16 +265,6 @@ const DSM = {
                     });
                 break;
 
-                case INSTRUCTIONS.GMOD:
-                    this.pc++;
-
-                    this.asmCode.push({
-                        currentPC,
-                        byte: [ instruction ],
-                        asm: [ "GMOD" ]
-                    });
-                break;
-
                 case INSTRUCTIONS.PLOT:
                     this.pc++;
 
@@ -293,30 +285,6 @@ const DSM = {
                             xPos.toString(),
                             yPos.toString(),
                             size.toString(),
-                        ]
-                    });
-                break;
-
-                case INSTRUCTIONS.TPLOT:
-                    this.pc++;
-
-                    var xPos = this.byteCodes[this.pc++];
-                    var yPos = this.byteCodes[this.pc++];
-                    var text = this.readString();
-                    
-                    this.asmCode.push({
-                        currentPC,
-                        byte: [
-                            instruction,
-                            xPos,
-                            yPos,
-                            ...this.stringToCharCodeArray(text)
-                        ],
-                        asm: [
-                            "TPLOT",
-                            xPos.toString(),
-                            yPos.toString(),
-                            text
                         ]
                     });
                 break;
@@ -348,20 +316,11 @@ const DSM = {
                         asm: [ "HALT" ]
                     });
                 break;
-
-                case INSTRUCTIONS.TMOD:
-                    this.pc++;
-                    
-                    this.asmCode.push({
-                        currentPC,
-                        byte: [ instruction ],
-                        asm: [ "TMOD" ]
-                    });
-                break;
             
                 default:
                     console.error("Instruction not recognized: " + instruction);
-                    process.exit(instruction);
+                    this.pc = this.byteCodes.length;
+                break;
             }
         } while (this.pc < this.byteCodes.length);
 
