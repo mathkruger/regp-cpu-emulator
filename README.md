@@ -5,7 +5,7 @@ Besides the emulator, this project contains a assembler and a disassembler, allo
 ## How to assemble code and run it on the emulator
 ``` shell
 npm install
-npm start "./asm-examples/fibonacci.asm"
+npm run asm "./asm-examples/fibonacci.asm"
 ```
 
 ## How to run the disassembler

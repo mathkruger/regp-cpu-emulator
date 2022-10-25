@@ -1,18 +1,16 @@
 import { readFileSync } from "fs";
 
 import { regpCPU } from "./emulator/regpCPU.js";
-import { ASM } from "./assembly/assembler.js";
-import { DSM } from "./assembly/disassembler.js";
+import { ASM } from "./services/assembly/assembler.js";
+import { DSM } from "./services/assembly/disassembler.js";
 
 const disassembleCode = () => {
     const fileName   = process.argv[3];
     const byteCodes  = readFileSync(fileName, "utf-8");
 
-    DSM.load(JSON.parse(byteCodes));
-
-    const asmCode = DSM.run();
+    const asmCode = DSM.disassemble(JSON.parse(byteCodes));
     console.log(asmCode);
-}
+};
 
 const runCode = () => {
     const fileName = process.argv[3];
@@ -34,7 +32,7 @@ const runCode = () => {
     }
 
     regpCPU.run();
-}
+};
 
 try {
     const mode = process.argv[2];
