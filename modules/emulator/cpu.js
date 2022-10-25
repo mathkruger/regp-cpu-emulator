@@ -1,13 +1,13 @@
 import { INSTRUCTIONS, STRING_STOPPER } from "../common/instructions.js";
 
-const regpCPU = {
+const CPU = {
     regs: [0, 0, 0, 0],
     stack: [],
     pc: 0,
     halted: false,
     program: [],
-    output: null,
     input: null,
+    output: null,
 
     reset() {
         this.regs = [0, 0, 0, 0];
@@ -19,13 +19,13 @@ const regpCPU = {
         this.canvasCtx = null;
     },
     
-    load(program, output, input) {
-        if (output) {
-            this.output = output;
-        }
-        
+    load(program, input, output) {
         if (input) {
             this.input = input;
+        }
+
+        if (output) {
+            this.output = output;
         }
 
         this.reset();
@@ -133,7 +133,7 @@ const regpCPU = {
             case INSTRUCTIONS.SCAN:
                 this.pc++;
                 var register = this.program[this.pc++];
-                var userInput = await this.input("");
+                var userInput = await this.input.get();
                 this.regs[register] = parseInt(userInput);
             break;
 
@@ -190,5 +190,5 @@ const regpCPU = {
 }
 
 export {
-    regpCPU
+    CPU
 };

@@ -8,8 +8,11 @@
     <title>REGP Emulator</title>
 
     <link rel="stylesheet" href="https://unpkg.com/terminal.css@0.7.2/dist/terminal.min.css" />
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    <link href="https://css.gg/software-upload.css" rel="stylesheet" />
+    <link href="https://css.gg/software-download.css" rel="stylesheet" />
+    <link href="https://css.gg/play-list-search.css" rel="stylesheet" />
+    <link href="https://css.gg/play-button.css" rel="stylesheet" />
+    <link href="https://css.gg/file-add.css" rel="stylesheet" />
     
     <link rel="stylesheet" href="css/styles.css" />
     <script async defer type="module" src="index.js"></script>
@@ -22,7 +25,7 @@
                 <header>REGP Terminal</header>
                 
                 <div>
-                    <canvas class="results" width="640" height="400"></canvas>
+                    <canvas class="results" width="320" height="200"></canvas>
                     <input class="terminal-input" type="text" placeholder="DATA INPUT" />
                 </div>
             </div>
@@ -33,9 +36,25 @@
                 <header>Editor</header>
 
                 <div>
-                    <textarea class="code-editor" cols="30" rows="10">PRINTS "HEY REGP!"</textarea>
-                    <button class="btn btn-default btn-ghost assemble">Assemble</button>
-                    <button class="btn btn-default btn-ghost assemble-run">Assemble + Run</button>
+                    <textarea class="code-editor" cols="30" rows="10">
+PRINTS "HEY REGP!"
+HALT
+                    </textarea>
+                    <div class="buttons-container">
+                        <div class="item">
+                            <button class="btn btn-default btn-ghost assemble"><i class="gg-file-add"></i></button>
+                            <button class="btn btn-default btn-ghost assemble-run">
+                                <i class="gg-file-add"></i>
+                                <i class="gg-play-button"></i>
+                            </button>
+                        </div>
+
+                        <div class="item">
+                            <input style="display: none;" type="file" class="upload-code-input" />
+                            <button class="btn btn-default btn-ghost upload-code"><i class="gg-software-upload"></i></button>
+                            <button class="btn btn-default btn-ghost download-code"><i class="gg-software-download"></i></button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -44,8 +63,18 @@
 
                 <div>
                     <textarea class="bytecodes-editor" cols="30" rows="10"></textarea>
-                    <button class="btn btn-primary btn-ghost run">Run</button>
-                    <button class="btn btn-error btn-ghost disassemble">Disassemble</button>
+                    <div class="buttons-container">
+                        <div class="item">
+                            <button class="btn btn-primary btn-ghost run"><i class="gg-play-button"></i></button>
+                            <button class="btn btn-error btn-ghost disassemble"><i class="gg-play-list-search"></i></button>
+                        </div>
+
+                        <div class="item">
+                            <input style="display: none;" type="file" class="upload-bytes-input" />
+                            <button class="btn btn-default btn-ghost upload-bytes"><i class="gg-software-upload"></i></button>
+                            <button class="btn btn-default btn-ghost download-bytes"><i class="gg-software-download"></i></button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

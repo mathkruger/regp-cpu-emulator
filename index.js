@@ -1,102 +1,142 @@
-import { regpCPU } from "./modules/emulator/regpCPU.js";
+import { CPU } from "./modules/emulator/cpu.js";
+import { IO }  from "./modules/emulator/io.js";
 import { ASM } from "./modules/assembly/assembler.js";
 import { DSM } from "./modules/assembly/disassembler.js";
 
-// Panels
-const codeEditor        = document.querySelector(".code-editor");
-const byteCodesEditor   = document.querySelector(".bytecodes-editor");
-const results           = document.getElementsByTagName("canvas")[0];
-const disassembleResult = document.querySelector(".disassemble-result");
-
-// Buttons
-const assembleButton    = document.querySelector(".assemble");
-const disassembleButton = document.querySelector(".disassemble");
-const runButton         = document.querySelector(".run");
-const assembleAndRun    = document.querySelector(".assemble-run");
-const closeDisassemble  = document.querySelector(".close-disassemble-panel");
-
-const terminalConfigs = {
-    canvasCursor: 0,
-    fontSize: 14,
-    font: "Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,serif",
-    color: "#33cf04",
-};
-
-// IO
-const customConsole = {
-    log: (result) => {
-        results.getContext("2d").font = terminalConfigs.fontSize + terminalConfigs.font;
-        results.getContext("2d").fillStyle = terminalConfigs.color;
-        results.getContext("2d").fillText(result, 5, terminalConfigs.canvasCursor + 4);
-
-        terminalConfigs.canvasCursor += terminalConfigs.fontSize + 4;
-    },
-    clear: () => {
-        terminalConfigs.canvasCursor = 10;
-        results.getContext("2d").fillStyle = "black";
-        results.getContext("2d").fillRect(0, 0, results.width, results.height);
-    },
-    fillRect: (x, y, size = null, color = null) => {
-        results.getContext("2d").fillStyle = color ? color : terminalConfigs.color;
-        results.getContext("2d").fillRect(x, y, size ? size : results.width, size ? size : results.height);
-    },
-    fillStyle: (color) => {
-        results.getContext("2d").fillStyle = color;
-    },
-    error: (message) => {
-        results.value = "ERRO: " + message;
-    }
-};
-
-const customInput = () => {
-    return new Promise(resolve => {
-        const input = document.querySelector(".terminal-input");
+const app = {
+    codeEditor          : null,
+    byteCodesEditor     : null,
+    disassembleResult   : null,
+    terminal            : null,
+    terminalInput       : null,
     
-        window.addEventListener("keyup", (e) => {
-            if (e.key === "Enter") {
-                const value = input.value;
+    assembleButton      : null,
+    disassembleButton   : null,
+    runButton           : null,
+    assembleAndRun      : null,
+    closeDisassemble    : null,
+    uploadASMButton     : null,
+    uploadASMInput      : null,
+    downloadASMButton   : null,
+    uploadBytesButton   : null,
+    uploadBytesInput    : null,
+    downloadBytesButton : null,
 
-                customConsole.log(value);
-                input.value = "";
-                
-                resolve(value);
-            }
+    initialize() {
+        this.codeEditor          = document.querySelector(".code-editor");
+        this.byteCodesEditor     = document.querySelector(".bytecodes-editor");
+        this.disassembleResult   = document.querySelector(".disassemble-result");
+        this.terminal            = document.getElementsByTagName("canvas")[0];
+        this.terminalInput       = document.querySelector(".terminal-input");
+
+        this.assembleButton      = document.querySelector(".assemble");
+        this.disassembleButton   = document.querySelector(".disassemble");
+        this.runButton           = document.querySelector(".run");
+        this.assembleAndRun      = document.querySelector(".assemble-run");
+        this.closeDisassemble    = document.querySelector(".close-disassemble-panel");
+
+        this.uploadASMButton     = document.querySelector(".upload-code"),
+        this.uploadASMInput      = document.querySelector(".upload-code-input"),
+        this.downloadASMButton   = document.querySelector(".download-code"),
+        this.uploadBytesButton   = document.querySelector(".upload-bytes"),
+        this.uploadBytesInput    = document.querySelector(".upload-bytes-input"),
+        this.downloadBytesButton = document.querySelector(".download-bytes"),
+
+        this.listenEvents();
+    },
+
+    listenEvents() {
+        this.assembleButton.addEventListener("click", () => {
+            this.assembleCode()
         });
-    });
-};
 
-// Assemble, disassemble and run
-const disassembleCode = () => {
-    disassembleResult.parentElement.classList.remove("closed");
+        this.disassembleButton.addEventListener("click", () => {
+            this.disassembleCode();
+        });
 
-    const byteCodes  = byteCodesEditor.value.split(",").map(x => parseInt(x));
-    const asmCode = DSM.disassemble(byteCodes);
-    disassembleResult.innerHTML = asmCode;
-};
+        this.runButton.addEventListener("click", () => {
+            this.runCode();
+        });
 
-const assembleCode = () => {
-    const program  = codeEditor.value;
-    const bytes    = ASM.assemble(program);
-    byteCodesEditor.value = bytes;
+        this.assembleAndRun.addEventListener("click", () => {
+            this.assembleCode();
+            this.runCode();
+        });
+
+        this.closeDisassemble.addEventListener("click", () => {
+            this.disassembleResult.parentElement.classList.add("closed");
+        });
+
+        this.uploadASMButton.addEventListener("click", () => {
+            this.uploadASMInput.click();
+        });
+
+        this.uploadASMInput.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            this.uploadContent(this.codeEditor, file);
+        });
+
+        this.downloadASMButton.addEventListener("click", () => {
+            this.downloadContent(this.codeEditor, ".asm");
+        });
+
+        this.uploadBytesButton.addEventListener("click", () => {
+            this.uploadBytesInput.click();
+        });
+
+        this.uploadBytesInput.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            this.uploadContent(this.byteCodesEditor, file);
+        });
+
+        this.downloadBytesButton.addEventListener("click", () => {
+            this.downloadContent(this.byteCodesEditor, "");
+        });
+    },
+
+    disassembleCode() {
+        this.disassembleResult.parentElement.classList.remove("closed");
+    
+        const byteCodes                  = this.byteCodesEditor.value.split(",").map(x => parseInt(x));
+        const asmCode                    = DSM.disassemble(byteCodes);
+        this.disassembleResult.innerHTML = asmCode;
+    },
+    
+    assembleCode() {
+        const program  = this.codeEditor.value;
+        const bytes    = ASM.assemble(program);
+        this.byteCodesEditor.value = bytes;
+    },
+    
+    runCode() {
+        const bytes = this.byteCodesEditor.value.split(",").map(x => parseInt(x));
+        
+        IO.input.initialize(this.terminalInput);
+        IO.output.initialize(this.terminal);
+
+        IO.output.clear();
+
+        CPU.load(bytes, IO.input, IO.output);
+        CPU.run();
+    },
+
+    downloadContent(container, extension) {
+        const content = container.value;
+        const link = document.createElement("a");
+        const mimeType = "text/plain";
+
+        link.setAttribute("download", "export" + extension);
+        link.setAttribute("href", "data:" + mimeType  +  ";charset=utf-8," + encodeURIComponent(content));
+        link.click(); 
+    },
+
+    uploadContent(container, file) {
+        const reader = new FileReader();
+        reader.readAsText(file);
+        reader.onloadend = (txt) => {
+            container.value = txt.target.result;
+        };
+    }
 }
 
-const runCode = () => {
-    customConsole.clear();
-
-    const bytes = byteCodesEditor.value.split(",").map(x => parseInt(x));
-    regpCPU.load(bytes, customConsole, customInput.bind(this));
-    regpCPU.run();
-};
-
-// Buttons event handling
-assembleButton.addEventListener("click", assembleCode);
-disassembleButton.addEventListener("click", disassembleCode);
-runButton.addEventListener("click", runCode);
-assembleAndRun.addEventListener("click", () => {
-    assembleCode();
-    runCode();
-});
-
-closeDisassemble.addEventListener("click", () => {
-    disassembleResult.parentElement.classList.add("closed");
-});
+app.initialize();

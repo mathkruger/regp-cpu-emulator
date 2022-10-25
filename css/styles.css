@@ -21,13 +21,15 @@
     margin: 0 auto;
     border: 1px solid;
     margin-bottom: 1rem;
-    /* background: black; */
+    background: black;
+    zoom: 150%;
 }
 
 .app-container {
     display: flex;
     gap: 20px;
     padding-top: 20px;
+    margin-bottom: 20px;
 }
 
 .app-container > * {
@@ -36,4 +38,19 @@
 
 .closed {
     display: none !important;
+}
+
+.disassemble-container {
+    margin-bottom: 20px;
+}
+
+.buttons-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.buttons-container .item {
+    display: flex;
+    gap: 10px;
 }
