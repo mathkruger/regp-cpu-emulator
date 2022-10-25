@@ -14,13 +14,27 @@ const DSM = {
             this.disassemble();
         } while (this.pc < this.byteCodes.length);
 
+        const biggestByteLenght = this.asmCode
+            .map(x => x.byte.join(" "))
+            .reduce((savedText, text) => (text.length > savedText.length ? text : savedText), '')
+            .length;
+
         return this.asmCode.map(x => {
-            return x.join(" ");
+            let line = x.currentPC + "\t";
+            const bytes = x.byte.join(" ");
+            const asm = x.asm.join(" ");
+
+            line += bytes;
+            line = line.padEnd(biggestByteLenght + 10, " ");
+            line += "\t" + asm;
+
+            return line;
         }).join("\n");
     },
 
     disassemble() {
         const instruction = this.byteCodes[this.pc];
+        const currentPC = this.pc;
         
         switch (instruction) {
             case INSTRUCTIONS.MOVR:
@@ -28,11 +42,19 @@ const DSM = {
                 var registerDestination = this.byteCodes[this.pc++];
                 var registerSource      = this.byteCodes[this.pc++];
 
-                this.asmCode.push([
-                    "MOVR",
-                    this.getKeyByValue(REGISTERS, registerDestination),
-                    this.getKeyByValue(REGISTERS, registerSource),
-                ]);
+                this.asmCode.push({
+                    currentPC,
+                    byte: [
+                        instruction,
+                        registerDestination,
+                        registerSource
+                    ],
+                    asm: [
+                        "MOVR",
+                        this.getKeyByValue(REGISTERS, registerDestination),
+                        this.getKeyByValue(REGISTERS, registerSource),
+                    ]
+                });
             break;
 
             case INSTRUCTIONS.MOVV:
@@ -40,11 +62,19 @@ const DSM = {
                 var registerDestination = this.byteCodes[this.pc++];
                 var value               = this.byteCodes[this.pc++];
 
-                this.asmCode.push([
-                    "MOVV",
-                    this.getKeyByValue(REGISTERS, registerDestination),
-                    value.toString(),
-                ]);
+                this.asmCode.push({
+                    currentPC,
+                    byte: [
+                        instruction,
+                        registerDestination,
+                        value
+                    ],
+                    asm: [
+                        "MOVV",
+                        this.getKeyByValue(REGISTERS, registerDestination),
+                        value.toString(),
+                    ]
+                });
             break;
 
             case INSTRUCTIONS.ADD:
@@ -52,11 +82,19 @@ const DSM = {
                 var registerDestination = this.byteCodes[this.pc++];
                 var registerSource      = this.byteCodes[this.pc++];
 
-                this.asmCode.push([
-                    "ADD",
-                    this.getKeyByValue(REGISTERS, registerDestination),
-                    this.getKeyByValue(REGISTERS, registerSource),
-                ]);
+                this.asmCode.push({
+                    currentPC,
+                    byte: [
+                        instruction,
+                        registerDestination,
+                        registerSource
+                    ],
+                    asm: [
+                        "ADD",
+                        this.getKeyByValue(REGISTERS, registerDestination),
+                        this.getKeyByValue(REGISTERS, registerSource),
+                    ]
+                });
             break;
 
             case INSTRUCTIONS.SUB:
@@ -64,41 +102,70 @@ const DSM = {
                 var registerDestination = this.byteCodes[this.pc++];
                 var registerSource      = this.byteCodes[this.pc++];
 
-                this.asmCode.push([
-                    "SUB",
-                    this.getKeyByValue(REGISTERS, registerDestination),
-                    this.getKeyByValue(REGISTERS, registerSource),
-                ]);
+                this.asmCode.push({
+                    currentPC,
+                    byte: [
+                        instruction,
+                        registerDestination,
+                        registerSource
+                    ],
+                    asm: [
+                        "SUB",
+                        this.getKeyByValue(REGISTERS, registerDestination),
+                        this.getKeyByValue(REGISTERS, registerSource),
+                    ]
+                });
             break;
 
             case INSTRUCTIONS.PUSH:
                 this.pc++;
                 var registerSource = this.byteCodes[this.pc++];
 
-                this.asmCode.push([
-                    "PUSH",
-                    this.getKeyByValue(REGISTERS, registerSource),
-                ]);
+                this.asmCode.push({
+                    currentPC,
+                    byte: [
+                        instruction,
+                        registerSource
+                    ],
+                    asm: [
+                        "PUSH",
+                        this.getKeyByValue(REGISTERS, registerSource),
+                    ]
+                });
             break;
 
             case INSTRUCTIONS.POP:
                 this.pc++;
                 var registerDestination = this.byteCodes[this.pc++];
 
-                this.asmCode.push([
-                    "POP",
-                    this.getKeyByValue(REGISTERS, registerDestination),
-                ]);
+                this.asmCode.push({
+                    currentPC,
+                    byte: [
+                        instruction,
+                        registerDestination
+                    ],
+                    asm: [
+                        "POP",
+                        this.getKeyByValue(REGISTERS, registerDestination),
+                    ]
+                });
             break;
 
             case INSTRUCTIONS.JP:
                 this.pc++;
                 var address = this.byteCodes[this.pc++];
 
-                this.asmCode.push([
-                    "JP",
-                    address,
-                ]);
+                this.asmCode.push({
+                    currentPC,
+                    byte: [
+                        instruction,
+                        address
+                    ],
+                    asm: [
+                        "JP",
+                        address,
+                    ]
+                });
             break;
 
             case INSTRUCTIONS.JL:
@@ -107,82 +174,127 @@ const DSM = {
                 var r2      = this.byteCodes[this.pc++];
                 var address = this.byteCodes[this.pc++];
 
-                this.asmCode.push([
-                    "JL",
-                    this.getKeyByValue(REGISTERS, r1),
-                    this.getKeyByValue(REGISTERS, r2),
-                    address.toString()
-                ]);
+                this.asmCode.push({
+                    currentPC,
+                    byte: [
+                        instruction,
+                        r1,
+                        r2,
+                        address
+                    ],
+                    asm: [
+                        "JL",
+                        this.getKeyByValue(REGISTERS, r1),
+                        this.getKeyByValue(REGISTERS, r2),
+                        address.toString()
+                    ]
+                });
             break;
 
             case INSTRUCTIONS.CALL:
                 this.pc++;
                 var address = this.byteCodes[this.pc++];
 
-                this.asmCode.push([
-                    "CALL",
-                    address.toString()
-                ]);
+                this.asmCode.push({
+                    currentPC,
+                    byte: [
+                        instruction,
+                        address
+                    ],
+                    asm: [
+                        "CALL",
+                        address.toString()
+                    ]
+                });
             break;
 
             case INSTRUCTIONS.FLAG:
                 this.pc++;
-                this.asmCode.push([
-                    "FLAG"
-                ]);
+                this.asmCode.push({
+                    currentPC,
+                    byte: [ instruction ],
+                    asm: [ "FLAG" ]
+                });
             break;
 
             case INSTRUCTIONS.RET:
                 this.pc++;
-                this.asmCode.push([
-                    "RET"
-                ]);
+                this.asmCode.push({
+                    currentPC,
+                    byte: [ instruction ],
+                    asm: [ "RET" ]
+                });
             break;
 
             case INSTRUCTIONS.PRINT:
                 this.pc++;
                 var register = this.byteCodes[this.pc++];
 
-                this.asmCode.push([
-                    "PRINT",
-                    this.getKeyByValue(REGISTERS, register),
-                ]);
+                this.asmCode.push({
+                    currentPC,
+                    byte: [
+                        instruction,
+                        register
+                    ],
+                    asm: [
+                        "PRINT",
+                        this.getKeyByValue(REGISTERS, register),
+                    ]
+                });
             break;
 
             case INSTRUCTIONS.PRINTS:
                 this.pc++;
                 var text = this.readString();
                 
-                this.asmCode.push([
-                    "PRINTS",
-                    "\"" + text + "\""
-                ]);
+                this.asmCode.push({
+                    currentPC,
+                    byte: [
+                        instruction,
+                        ...this.stringToCharCodeArray(text)
+                    ],
+                    asm: [
+                        "PRINTS",
+                        text
+                    ]
+                });
             break;
 
             case INSTRUCTIONS.SCAN:
                 this.pc++;
                 var register = this.byteCodes[this.pc++];
                 
-                this.asmCode.push([
-                    "SCAN",
-                    this.getKeyByValue(REGISTERS, register),
-                ]);
+                this.asmCode.push({
+                    currentPC,
+                    byte: [
+                        instruction,
+                        register
+                    ],
+                    asm: [
+                        "SCAN",
+                        this.getKeyByValue(REGISTERS, register),
+                    ]
+                });
             break;
 
             case INSTRUCTIONS.CLS:
                 this.pc++;
 
-                this.asmCode.push([
-                    "CLS"
-                ]);
+                this.asmCode.push({
+                    currentPC,
+                    byte: [ instruction ],
+                    asm: [ "CLS" ]
+                });
             break;
 
             case INSTRUCTIONS.GMOD:
                 this.pc++;
 
-                this.asmCode.push([
-                    "GMOD"
-                ]);
+                this.asmCode.push({
+                    currentPC,
+                    byte: [ instruction ],
+                    asm: [ "GMOD" ]
+                });
             break;
 
             case INSTRUCTIONS.PLOT:
@@ -192,12 +304,21 @@ const DSM = {
                 var yPos = this.byteCodes[this.pc++];
                 var size = this.byteCodes[this.pc++];
                 
-                this.asmCode.push([
-                    "PLOT",
-                    xPos.toString(),
-                    yPos.toString(),
-                    size.toString(),
-                ]);
+                this.asmCode.push({
+                    currentPC,
+                    byte: [
+                        instruction,
+                        xPos,
+                        yPos,
+                        size
+                    ],
+                    asm: [
+                        "PLOT",
+                        xPos.toString(),
+                        yPos.toString(),
+                        size.toString(),
+                    ]
+                });
             break;
 
             case INSTRUCTIONS.TPLOT:
@@ -207,12 +328,21 @@ const DSM = {
                 var yPos = this.byteCodes[this.pc++];
                 var text = this.readString();
                 
-                this.asmCode.push([
-                    "TPLOT",
-                    xPos.toString(),
-                    yPos.toString(),
-                    "\"" + text + "\""
-                ]);
+                this.asmCode.push({
+                    currentPC,
+                    byte: [
+                        instruction,
+                        xPos,
+                        yPos,
+                        ...this.stringToCharCodeArray(text)
+                    ],
+                    asm: [
+                        "TPLOT",
+                        xPos.toString(),
+                        yPos.toString(),
+                        text
+                    ]
+                });
             break;
 
             case INSTRUCTIONS.BKG:
@@ -220,28 +350,37 @@ const DSM = {
 
                 var color = this.readString();
                 
-                this.asmCode.push([
-                    "BKG",
-                    xPos.toString(),
-                    yPos.toString(),
-                    "\"" + color + "\""
-                ]);
+                this.asmCode.push({
+                    currentPC,
+                    byte: [
+                        instruction,
+                        ...this.stringToCharCodeArray(color)
+                    ],
+                    asm: [
+                        "BKG",
+                        color
+                    ]
+                });
             break;
 
             case INSTRUCTIONS.HALT:
                 this.pc++;
                 
-                this.asmCode.push([
-                    "HALT",
-                ]);
+                this.asmCode.push({
+                    currentPC,
+                    byte: [ instruction ],
+                    asm: [ "HALT" ]
+                });
             break;
 
             case INSTRUCTIONS.TMOD:
                 this.pc++;
                 
-                this.asmCode.push([
-                    "TMOD",
-                ]);
+                this.asmCode.push({
+                    currentPC,
+                    byte: [ instruction ],
+                    asm: [ "TMOD" ]
+                });
             break;
         
             default:
@@ -264,7 +403,11 @@ const DSM = {
             }
         }
 
-        return totalString;
+        return "\"" + totalString + "\"";
+    },
+
+    stringToCharCodeArray(string) {
+        return string.split("").map(x => x.charCodeAt())
     }
 }
 
