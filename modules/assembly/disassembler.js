@@ -307,6 +307,24 @@ const DSM = {
                     });
                 break;
 
+                case INSTRUCTIONS.FRG:
+                    this.pc++;
+
+                    var color = this.readString();
+                    
+                    this.asmCode.push({
+                        currentPC,
+                        byte: [
+                            instruction,
+                            ...this.stringToCharCodeArray(color)
+                        ],
+                        asm: [
+                            "FRG",
+                            color
+                        ]
+                    });
+                break;
+
                 case INSTRUCTIONS.HALT:
                     this.pc++;
                     

@@ -16,6 +16,7 @@ const INSTRUCTIONS = {
     "CLS": 70,
     "PLOT": 81,
     "BKG": 83,
+    "FRG": 84,
     "HALT": 255
 };
 

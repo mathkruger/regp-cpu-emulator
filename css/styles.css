@@ -16,6 +16,14 @@
     margin-top: 20px;
 }
 
+.regp-terminal .results {
+    display: block;
+    margin: 0 auto;
+    border: 1px solid;
+    margin-bottom: 1rem;
+    /* background: black; */
+}
+
 .app-container {
     display: flex;
     gap: 20px;

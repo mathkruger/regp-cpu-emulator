@@ -6,9 +6,7 @@ const regpCPU = {
     pc: 0,
     halted: false,
     program: [],
-    font: "10px Monospace white",
-    color: "white",
-    outputObject: null,
+    output: null,
     input: null,
 
     reset() {
@@ -150,17 +148,21 @@ const regpCPU = {
                 var yPos = this.program[this.pc++];
                 var size = this.program[this.pc++];
                 
-                // this.canvasCtx.fillRect(xPos, yPos, size, size);
+                this.output.fillRect(xPos, yPos, size);
             break;
 
             case INSTRUCTIONS.BKG:
                 this.pc++;
                 var color = this.readString();
 
-                // this.canvasCtx.fillStyle = color.toLowerCase();
-                // this.canvasCtx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-                // this.canvasCtx.fillStyle = this.color;
+                this.output.fillRect(0, 0, null, color);
+            break;
 
+            case INSTRUCTIONS.FRG:
+                this.pc++;
+                var color = this.readString();
+
+                this.output.fillStyle(color);
             break;
 
             case INSTRUCTIONS.HALT:
