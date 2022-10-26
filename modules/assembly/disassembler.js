@@ -349,6 +349,48 @@ const DSM = {
                     });
                 break;
 
+                case INSTRUCTIONS.BEEPV:
+                    this.pc++;
+
+                    var duration = this.byteCodes[this.pc++];
+                    var frequency = this.byteCodes[this.pc++];
+                    
+                    this.asmCode.push({
+                        currentPC,
+                        byte: [
+                            instruction,
+                            duration,
+                            frequency
+                        ],
+                        asm: [
+                            "BEEPV",
+                            duration,
+                            frequency
+                        ]
+                    });
+                break;
+
+                case INSTRUCTIONS.BEEPR:
+                    this.pc++;
+
+                    var duration = this.byteCodes[this.pc++];
+                    var frequency = this.byteCodes[this.pc++];
+                    
+                    this.asmCode.push({
+                        currentPC,
+                        byte: [
+                            instruction,
+                            duration,
+                            frequency
+                        ],
+                        asm: [
+                            "BEEPR",
+                            this.getKeyByValue(REGISTERS, duration),
+                            this.getKeyByValue(REGISTERS, frequency)
+                        ]
+                    });
+                break;
+
                 case INSTRUCTIONS.HALT:
                     this.pc++;
                     

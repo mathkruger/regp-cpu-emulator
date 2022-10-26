@@ -175,6 +175,22 @@ const CPU = {
                 this.output.fillStyle(color);
             break;
 
+            case INSTRUCTIONS.BEEPV:
+                this.pc++;
+                var duration  = this.program[this.pc++];
+                var frequency = this.program[this.pc++];
+
+                this.beep(duration, frequency);
+            break;
+
+            case INSTRUCTIONS.BEEPR:
+                this.pc++;
+                var duration  = this.regs[this.program[this.pc++]];
+                var frequency = this.regs[this.program[this.pc++]];
+
+                this.beep(duration, frequency);
+            break;
+
             case INSTRUCTIONS.HALT:
                 this.pc++;
                 this.halted = true;
@@ -196,6 +212,20 @@ const CPU = {
         }
 
         return totalString;
+    },
+    beep(duration, frequency) {
+        var audioCtx = new (window.AudioContext || window.webkitAudioContext || window.audioContext);
+        var oscillator = audioCtx.createOscillator();
+        var gainNode = audioCtx.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        gainNode.gain.value = -10;
+        oscillator.frequency.value = frequency;
+        
+        oscillator.start(audioCtx.currentTime);
+        oscillator.stop(audioCtx.currentTime + ((duration || 500) / 1000));
     }
 }
 

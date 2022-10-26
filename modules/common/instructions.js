@@ -18,6 +18,8 @@ const INSTRUCTIONS = {
     "PLOTR": 82,
     "BKG": 83,
     "FRG": 84,
+    "BEEPV": 90,
+    "BEEPR": 91,
     "HALT": 255
 };
 
