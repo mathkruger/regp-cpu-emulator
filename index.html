@@ -16,8 +16,12 @@
 <body>
     <div class="container">
         <div class="regp-terminal">
-            <div class="terminal-card">
-                <header>REGP Terminal</header>
+            <div id="terminal" class="terminal-card">
+                <header>
+                    REGP Terminal
+
+                    <button class="maximize-button" data-container="terminal"><i class="gg-shape-square"></i></button>
+                </header>
                 
                 <div>
                     <canvas class="results" width="320" height="200"></canvas>
@@ -27,8 +31,12 @@
         </div>
 
         <div class="app-container">
-            <div class="terminal-card">
-                <header>Editor</header>
+            <div id="editor" class="terminal-card">
+                <header>
+                    Editor
+
+                    <button class="maximize-button" data-container="editor"><i class="gg-shape-square"></i></button>
+                </header>
 
                 <div>
                     <textarea class="code-editor" cols="30" rows="10">
@@ -51,8 +59,12 @@
                 </div>
             </div>
 
-            <div class="terminal-card">
-                <header>Bytecodes</header>
+            <div id="bytes" class="terminal-card">
+                <header>
+                    Bytecodes
+
+                    <button class="maximize-button" data-container="bytes"><i class="gg-shape-square"></i></button>
+                </header>
 
                 <div>
                     <textarea class="bytecodes-editor" cols="30" rows="10"></textarea>
@@ -72,8 +84,18 @@
             </div>
         </div>
         <div class="disassemble-container closed">
-            <pre class="disassemble-result"></pre>
-            <button class="btn btn-error btn-ghost close-disassemble-panel">Close</button>
+            <div id="disassembled-code" class="terminal-card">
+                <header>
+                    Disassembled Bytes
+
+                    <button class="maximize-button" data-container="disassembled-code"><i class="gg-shape-square"></i></button>
+                </header>
+
+                <div>
+                    <pre class="disassemble-result"></pre>
+                    <button class="btn btn-error btn-ghost close-disassemble-panel">Close</button>
+                </div>
+            </div>
         </div>
     </div>
 </body>

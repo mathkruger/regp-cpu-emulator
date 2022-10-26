@@ -21,6 +21,7 @@ const app = {
     uploadBytesButton   : null,
     uploadBytesInput    : null,
     downloadBytesButton : null,
+    maximizeButtons     : null,
 
     initialize() {
         this.loadElements();
@@ -50,6 +51,7 @@ const app = {
         this.uploadBytesButton   = document.querySelector(".upload-bytes");
         this.uploadBytesInput    = document.querySelector(".upload-bytes-input");
         this.downloadBytesButton = document.querySelector(".download-bytes");
+        this.maximizeButtons     = document.querySelectorAll(".maximize-button");
 
         this.codeEditor.value    = `PRINTS "HEY REGP!"\nHALT`;
     },
@@ -73,7 +75,10 @@ const app = {
         });
 
         this.closeDisassemble.addEventListener("click", () => {
-            this.disassembleResult.parentElement.classList.add("closed");
+            this.disassembleResult
+            .parentElement
+            .parentElement
+            .parentElement.classList.add("closed");
         });
 
         this.uploadASMButton.addEventListener("click", () => {
@@ -101,10 +106,19 @@ const app = {
         this.downloadBytesButton.addEventListener("click", () => {
             this.downloadContent(this.byteCodesEditor, "");
         });
+
+        this.maximizeButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                this.toggleMaximizeContainer(button.dataset.container);
+            });
+        })
     },
 
     disassembleCode() {
-        this.disassembleResult.parentElement.classList.remove("closed");
+        this.disassembleResult
+        .parentElement
+        .parentElement
+        .parentElement.classList.remove("closed");
     
         const byteCodes                  = this.byteCodesEditor.value.split(",").map(x => parseInt(x));
         const asmCode                    = DSM.disassemble(byteCodes);
@@ -142,7 +156,11 @@ const app = {
         reader.onloadend = (txt) => {
             container.value = txt.target.result;
         };
-    }
+    },
+
+    toggleMaximizeContainer(container) {
+        document.getElementById(container).classList.toggle("maximized");
+    },
 }
 
 app.initialize();

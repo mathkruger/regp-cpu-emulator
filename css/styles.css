@@ -3,6 +3,7 @@
 @import url('https://css.gg/play-list-search.css');
 @import url('https://css.gg/play-button.css');
 @import url('https://css.gg/file-add.css');
+@import url('https://css.gg/shape-square.css');
 
 :root {
     --background-color: #222225;
@@ -16,6 +17,45 @@
     --progress-bar-background: #3f3f44;
     --progress-bar-fill: #62c4ff;
     --code-bg-color: #3f3f44;
+}
+
+.terminal-card {
+    position: relative;
+}
+
+.maximize-button {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--font-color);
+    background-color: var(--background-color);
+    border: 1px solid;
+    cursor: pointer;
+}
+
+.terminal-card.maximized {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--background-color);
+    z-index: 999;
+    margin-top: 0;
+}
+
+.terminal-card.maximized > div {
+    height: calc(100vh - 38px);
+    overflow: auto;
+}
+
+.terminal-card.maximized textarea {
+    height: calc(100vh - 105px);
 }
 
 .regp-terminal {
