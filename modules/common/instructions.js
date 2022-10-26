@@ -26,7 +26,8 @@ const REGISTERS = {
     "R0": 0,
     "R1": 1,
     "R2": 2,
-    "R3": 3
+    "R3": 3,
+    "R4": 4
 };
 
 const STRING_STOPPER = "\"".charCodeAt();
