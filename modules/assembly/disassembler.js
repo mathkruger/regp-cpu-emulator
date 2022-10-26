@@ -289,6 +289,30 @@ const DSM = {
                     });
                 break;
 
+                case INSTRUCTIONS.PLOTR:
+                    this.pc++;
+
+                    var xPos = this.byteCodes[this.pc++];
+                    var yPos = this.byteCodes[this.pc++];
+                    var size = this.byteCodes[this.pc++];
+                    
+                    this.asmCode.push({
+                        currentPC,
+                        byte: [
+                            instruction,
+                            xPos,
+                            yPos,
+                            size
+                        ],
+                        asm: [
+                            "PLOTR",
+                            this.getKeyByValue(REGISTERS, xPos),
+                            this.getKeyByValue(REGISTERS, yPos),
+                            this.getKeyByValue(REGISTERS, size),
+                        ]
+                    });
+                break;
+
                 case INSTRUCTIONS.BKG:
                     this.pc++;
 

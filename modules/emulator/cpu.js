@@ -151,6 +151,15 @@ const CPU = {
                 this.output.fillRect(xPos, yPos, size);
             break;
 
+            case INSTRUCTIONS.PLOTR:
+                this.pc++;
+                var xPos = this.regs[this.program[this.pc++]];
+                var yPos = this.regs[this.program[this.pc++]];
+                var size = this.regs[this.program[this.pc++]];
+                
+                this.output.fillRect(xPos, yPos, size);
+            break;
+
             case INSTRUCTIONS.BKG:
                 this.pc++;
                 var color = this.readString();

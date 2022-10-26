@@ -15,6 +15,7 @@ const INSTRUCTIONS = {
     "SCAN": 62,
     "CLS": 70,
     "PLOT": 81,
+    "PLOTR": 82,
     "BKG": 83,
     "FRG": 84,
     "HALT": 255
