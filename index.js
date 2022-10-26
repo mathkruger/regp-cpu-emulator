@@ -23,6 +23,15 @@ const app = {
     downloadBytesButton : null,
 
     initialize() {
+        this.loadElements();
+        this.listenEvents();
+
+        IO.input.initialize(this.terminalInput);
+        IO.output.initialize(this.terminal);
+        CPU.initialize(IO.input, IO.output);
+    },
+
+    loadElements() {
         this.codeEditor          = document.querySelector(".code-editor");
         this.byteCodesEditor     = document.querySelector(".bytecodes-editor");
         this.disassembleResult   = document.querySelector(".disassemble-result");
@@ -35,14 +44,12 @@ const app = {
         this.assembleAndRun      = document.querySelector(".assemble-run");
         this.closeDisassemble    = document.querySelector(".close-disassemble-panel");
 
-        this.uploadASMButton     = document.querySelector(".upload-code"),
-        this.uploadASMInput      = document.querySelector(".upload-code-input"),
-        this.downloadASMButton   = document.querySelector(".download-code"),
-        this.uploadBytesButton   = document.querySelector(".upload-bytes"),
-        this.uploadBytesInput    = document.querySelector(".upload-bytes-input"),
-        this.downloadBytesButton = document.querySelector(".download-bytes"),
-
-        this.listenEvents();
+        this.uploadASMButton     = document.querySelector(".upload-code");
+        this.uploadASMInput      = document.querySelector(".upload-code-input");
+        this.downloadASMButton   = document.querySelector(".download-code");
+        this.uploadBytesButton   = document.querySelector(".upload-bytes");
+        this.uploadBytesInput    = document.querySelector(".upload-bytes-input");
+        this.downloadBytesButton = document.querySelector(".download-bytes");
     },
 
     listenEvents() {
@@ -110,13 +117,10 @@ const app = {
     
     runCode() {
         const bytes = this.byteCodesEditor.value.split(",").map(x => parseInt(x));
-        
-        IO.input.initialize(this.terminalInput);
-        IO.output.initialize(this.terminal);
 
         IO.output.clear();
 
-        CPU.load(bytes, IO.input, IO.output);
+        CPU.load(bytes);
         CPU.run();
     },
 

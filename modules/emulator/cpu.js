@@ -9,6 +9,17 @@ const CPU = {
     input: null,
     output: null,
 
+    initialize(input, output) {
+        this.reset();
+        this.input = input;
+        this.output = output;
+    },
+
+    load(program) {
+        this.reset();
+        this.program = program;
+    },
+
     reset() {
         this.regs = [0, 0, 0, 0];
         this.stack = [];
@@ -18,24 +29,13 @@ const CPU = {
         this.canvas = null;
         this.canvasCtx = null;
     },
-    
-    load(program, input, output) {
-        if (input) {
-            this.input = input;
-        }
-
-        if (output) {
-            this.output = output;
-        }
-
-        this.reset();
-        this.program = program;
-    },
 
     async run() {
         while (!this.halted) {
             await this.runOne();
         }
+
+        this.reset();
     },
 
     async runOne() {
@@ -135,6 +135,7 @@ const CPU = {
                 var register = this.program[this.pc++];
                 var userInput = await this.input.get();
                 this.regs[register] = parseInt(userInput);
+                this.output.log(this.regs[register]);
             break;
 
             case INSTRUCTIONS.CLS:

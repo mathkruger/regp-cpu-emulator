@@ -50,24 +50,28 @@ const IO = {
     
     input: {
         inputContainer: null,
+        currentPromise: null,
 
         initialize(input) {
             this.inputContainer = input;
+
+            this.inputContainer.addEventListener("keyup", (e) => {
+                if (e.key === "Enter" && this.currentPromise !== null) {
+                    const value = this.inputContainer.value;
+                    const resolve = this.currentPromise;
+
+                    this.currentPromise = null;
+                    this.inputContainer.value = "";
+                    resolve(value);
+                }
+            })
         },
 
         get() {
             return new Promise(resolve => {
-                window.addEventListener("keyup", (e) => {
-                    if (e.key === "Enter") {
-                        const value = this.inputContainer.value;
-                        
-                        this.inputContainer.value = "";
-                        
-                        resolve(value);
-                    }
-                });
+                this.currentPromise = resolve;
             });
-        }
+        },
     }
 };
 
