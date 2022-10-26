@@ -50,6 +50,8 @@ const app = {
         this.uploadBytesButton   = document.querySelector(".upload-bytes");
         this.uploadBytesInput    = document.querySelector(".upload-bytes-input");
         this.downloadBytesButton = document.querySelector(".download-bytes");
+
+        this.codeEditor.value    = `PRINTS "HEY REGP!"\nHALT`;
     },
 
     listenEvents() {

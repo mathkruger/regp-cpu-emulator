@@ -1,3 +1,9 @@
+@import url('https://css.gg/software-upload.css');
+@import url('https://css.gg/software-download.css');
+@import url('https://css.gg/play-list-search.css');
+@import url('https://css.gg/play-button.css');
+@import url('https://css.gg/file-add.css');
+
 :root {
     --background-color: #222225;
     --page-width: 75em;
