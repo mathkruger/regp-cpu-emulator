@@ -391,6 +391,18 @@ const DSM = {
                     });
                 break;
 
+                case INSTRUCTIONS.SLEEP:
+                    this.pc++;
+
+                    var duration = this.byteCodes[this.pc++]; 
+                    
+                    this.asmCode.push({
+                        currentPC,
+                        byte: [ instruction, duration ],
+                        asm: [ "HALT", duration ]
+                    });
+                break;
+
                 case INSTRUCTIONS.HALT:
                     this.pc++;
                     

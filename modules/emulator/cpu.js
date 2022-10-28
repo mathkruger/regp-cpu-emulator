@@ -181,7 +181,7 @@ const CPU = {
                 var duration  = this.program[this.pc++];
                 var frequency = this.program[this.pc++];
 
-                this.beep(duration, frequency);
+                await this.beep(duration, frequency);
             break;
 
             case INSTRUCTIONS.BEEPR:
@@ -189,7 +189,15 @@ const CPU = {
                 var duration  = this.regs[this.program[this.pc++]];
                 var frequency = this.regs[this.program[this.pc++]];
 
-                this.beep(duration, frequency);
+                await this.beep(duration, frequency);
+            break;
+
+            case INSTRUCTIONS.SLEEP:
+                this.pc++;
+
+                var duration = this.program[this.pc++];
+
+                await this.sleep(duration);
             break;
 
             case INSTRUCTIONS.HALT:
@@ -216,7 +224,7 @@ const CPU = {
 
         return totalString;
     },
-    beep(duration, frequency) {
+    async beep(duration, frequency) {
         var audioCtx = new (window.AudioContext || window.webkitAudioContext || window.audioContext);
         var oscillator = audioCtx.createOscillator();
         var gainNode = audioCtx.createGain();
@@ -228,7 +236,16 @@ const CPU = {
         oscillator.frequency.value = frequency;
         
         oscillator.start(audioCtx.currentTime);
-        oscillator.stop(audioCtx.currentTime + ((duration || 500) / 1000));
+        return new Promise(resolve => {
+            setTimeout(() => {
+                oscillator.stop();
+                resolve(true);
+            }, duration);
+        });
+    },
+
+    sleep(duration) {
+        return new Promise(resolve => setTimeout(() => resolve(true), duration));
     }
 }
 

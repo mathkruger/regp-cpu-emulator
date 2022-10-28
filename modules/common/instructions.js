@@ -20,6 +20,7 @@ const INSTRUCTIONS = {
     "FRG": 84,
     "BEEPV": 90,
     "BEEPR": 91,
+    "SLEEP": 254,
     "HALT": 255
 };
 
