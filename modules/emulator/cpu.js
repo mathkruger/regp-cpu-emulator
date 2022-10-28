@@ -3,6 +3,7 @@ import { INSTRUCTIONS, STRING_STOPPER } from "../common/instructions.js";
 const CPU = {
     regs: [0, 0, 0, 0, 0],
     stack: [],
+    clock: 10,
     pc: 0,
     halted: false,
     program: [],
@@ -201,6 +202,8 @@ const CPU = {
                 this.halted = true;
             break;
         }
+
+        await new Promise(resolve => setTimeout(() => resolve(true), this.clock));
     },
     readString() {
         var totalString = "";
