@@ -90,7 +90,7 @@ const app = {
         });
 
         EventsHandler.click(this.uploadASMButton, () => {
-            this.uploadASMInput.EventsHandler.click();
+            this.uploadASMInput.click();
         });
 
         EventsHandler.change(this.uploadASMInput, () => {
@@ -102,7 +102,7 @@ const app = {
         });
 
         EventsHandler.click(this.uploadBytesButton, () => {
-            this.uploadBytesInput.EventsHandler.click();
+            this.uploadBytesInput.click();
         });
 
         EventsHandler.change(this.uploadBytesInput, () => {
