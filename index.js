@@ -1,7 +1,10 @@
-import { CPU } from "./modules/emulator/cpu.js";
-import { IO }  from "./modules/emulator/io.js";
-import { ASM } from "./modules/assembly/assembler.js";
-import { DSM } from "./modules/assembly/disassembler.js";
+import { CPU }      from "./modules/emulator/cpu.js";
+import { IO }       from "./modules/emulator/io.js";
+import { SPEAKER }  from "./modules/emulator/speaker.js";
+import { ASM }      from "./modules/assembly/assembler.js";
+import { DSM }      from "./modules/assembly/disassembler.js";
+
+import { EventsHandler } from "./modules/common/events-handler.js";
 
 const app = {
     codeEditor          : null,
@@ -26,10 +29,15 @@ const app = {
     initialize() {
         this.loadElements();
         this.listenEvents();
+        this.setupEmulator();
+    },
 
+    setupEmulator() {
         IO.input.initialize(this.terminalInput);
         IO.output.initialize(this.terminal);
-        CPU.initialize(IO.input, IO.output);
+        SPEAKER.initialize();
+
+        CPU.initialize(IO.input, IO.output, SPEAKER);
     },
 
     loadElements() {
@@ -57,61 +65,57 @@ const app = {
     },
 
     listenEvents() {
-        this.assembleButton.addEventListener("click", () => {
-            this.assembleCode()
+        EventsHandler.click(this.assembleButton, () => {
+            this.assembleCode();
         });
 
-        this.disassembleButton.addEventListener("click", () => {
+        EventsHandler.click(this.disassembleButton, () => {
             this.disassembleCode();
         });
 
-        this.runButton.addEventListener("click", () => {
+        EventsHandler.click(this.runButton, () => {
             this.runCode();
         });
 
-        this.assembleAndRun.addEventListener("click", () => {
+        EventsHandler.click(this.assembleAndRun, () => {
             this.assembleCode();
             this.runCode();
         });
 
-        this.closeDisassemble.addEventListener("click", () => {
+        EventsHandler.click(this.closeDisassemble, () => {
             this.disassembleResult
             .parentElement
             .parentElement
             .parentElement.classList.add("closed");
         });
 
-        this.uploadASMButton.addEventListener("click", () => {
-            this.uploadASMInput.click();
+        EventsHandler.click(this.uploadASMButton, () => {
+            this.uploadASMInput.EventsHandler.click();
         });
 
-        this.uploadASMInput.addEventListener("change", (e) => {
-            const file = e.target.files[0];
-            this.uploadContent(this.codeEditor, file);
+        EventsHandler.change(this.uploadASMInput, () => {
+            this.uploadContent(this.codeEditor, e);
         });
 
-        this.downloadASMButton.addEventListener("click", () => {
+        EventsHandler.click(this.downloadASMButton, () => {
             this.downloadContent(this.codeEditor, ".asm");
         });
 
-        this.uploadBytesButton.addEventListener("click", () => {
-            this.uploadBytesInput.click();
+        EventsHandler.click(this.uploadBytesButton, () => {
+            this.uploadBytesInput.EventsHandler.click();
         });
 
-        this.uploadBytesInput.addEventListener("change", (e) => {
-            const file = e.target.files[0];
-            this.uploadContent(this.byteCodesEditor, file);
+        EventsHandler.change(this.uploadBytesInput, () => {
+            this.uploadContent(this.byteCodesEditor, e);
         });
 
-        this.downloadBytesButton.addEventListener("click", () => {
+        EventsHandler.click(this.downloadBytesButton, () => {
             this.downloadContent(this.byteCodesEditor, "");
         });
 
-        this.maximizeButtons.forEach(button => {
-            button.addEventListener("click", () => {
-                this.toggleMaximizeContainer(button.dataset.container);
-            });
-        })
+        EventsHandler.click(Array.from(this.maximizeButtons), (button) => {
+            this.toggleMaximizeContainer(button.dataset.container);
+        });
     },
 
     disassembleCode() {
@@ -147,10 +151,11 @@ const app = {
 
         link.setAttribute("download", "export" + extension);
         link.setAttribute("href", "data:" + mimeType  +  ";charset=utf-8," + encodeURIComponent(content));
-        link.click(); 
+        link.EventsHandler.click(); 
     },
 
-    uploadContent(container, file) {
+    uploadContent(container, e) {
+        const file = e.target.files[0];
         const reader = new FileReader();
         reader.readAsText(file);
         reader.onloadend = (txt) => {

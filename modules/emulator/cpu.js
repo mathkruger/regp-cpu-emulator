@@ -9,11 +9,13 @@ const CPU = {
     program: [],
     input: null,
     output: null,
+    speaker: null,
 
-    initialize(input, output) {
+    initialize(input, output, speaker) {
         this.reset();
         this.input = input;
         this.output = output;
+        this.speaker = speaker;
     },
 
     load(program) {
@@ -22,12 +24,12 @@ const CPU = {
     },
 
     reset() {
-        this.regs = [0, 0, 0, 0];
-        this.stack = [];
-        this.pc = 0;
-        this.halted = false;
-        this.program = [];
-        this.canvas = null;
+        this.regs      = [0, 0, 0, 0];
+        this.stack     = [];
+        this.pc        = 0;
+        this.halted    = false;
+        this.program   = [];
+        this.canvas    = null;
         this.canvasCtx = null;
     },
 
@@ -181,7 +183,7 @@ const CPU = {
                 var duration  = this.program[this.pc++];
                 var frequency = this.program[this.pc++];
 
-                await this.beep(duration, frequency);
+                await this.speaker.beep(duration, frequency);
             break;
 
             case INSTRUCTIONS.BEEPR:
@@ -189,7 +191,7 @@ const CPU = {
                 var duration  = this.regs[this.program[this.pc++]];
                 var frequency = this.regs[this.program[this.pc++]];
 
-                await this.beep(duration, frequency);
+                await this.speaker.beep(duration, frequency);
             break;
 
             case INSTRUCTIONS.SLEEP:
@@ -223,25 +225,6 @@ const CPU = {
         }
 
         return totalString;
-    },
-    async beep(duration, frequency) {
-        var audioCtx = new (window.AudioContext || window.webkitAudioContext || window.audioContext);
-        var oscillator = audioCtx.createOscillator();
-        var gainNode = audioCtx.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-        
-        gainNode.gain.value = -10;
-        oscillator.frequency.value = frequency;
-        
-        oscillator.start(audioCtx.currentTime);
-        return new Promise(resolve => {
-            setTimeout(() => {
-                oscillator.stop();
-                resolve(true);
-            }, duration);
-        });
     },
 
     sleep(duration) {

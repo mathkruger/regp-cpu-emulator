@@ -58,6 +58,10 @@
     height: calc(100vh - 105px);
 }
 
+.terminal-card.maximized pre {
+    height: calc(100vh - 125px);
+}
+
 .regp-terminal {
     margin-top: 20px;
 }
