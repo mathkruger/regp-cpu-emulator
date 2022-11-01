@@ -33,10 +33,45 @@
         <div class="app-container">
             <div id="editor" class="terminal-card">
                 <header>
+                    <button class="load-example-button">
+                        <i class="gg-menu"></i>
+                    </button>
+
                     Editor
 
                     <button class="maximize-button" data-container="editor"><i class="gg-shape-square"></i></button>
                 </header>
+
+                <dialog class="load-exemple-dialog">
+                    <form method="dialog">
+
+                        <p>
+                            <label>
+                                Selecione um exemplo de código abaixo <br/>
+                                <select class="examples-dropdown">
+                                    <option disabled selected>Exemplos de código ...</option>
+                                    <optgroup label="Algoritmos">
+                                        <option value="double.asm">Double</option>
+                                        <option value="fibonacci.asm">Fibonacci</option>
+                                        <option value="if-example.asm">If Example</option>
+                                    </optgroup>
+                                    <optgroup label="Gráficos">
+                                        <option value="borders.asm">Borders</option>
+                                        <option value="graphics.asm">Graphics</option>
+                                    </optgroup>
+                                    <optgroup label="Som">
+                                        <option value="happybirthday-song.asm">Happy Birthday Song</option>
+                                    </optgroup>
+                                </select>
+                            </label>
+                        </p>
+    
+                        <div>
+                            <button class="btn btn-ghost examples-modal-cancel" value="cancel">Cancelar</button>
+                            <button class="btn btn-ghost examples-modal-confirm" value="default">Confirmar</button>
+                        </div>
+                    </form>
+                </dialog>
 
                 <div>
                     <textarea class="code-editor" cols="30" rows="10">

@@ -12,6 +12,7 @@ const app = {
     disassembleResult   : null,
     terminal            : null,
     terminalInput       : null,
+    loadExampleDialog   : null,
     
     assembleButton      : null,
     disassembleButton   : null,
@@ -25,6 +26,11 @@ const app = {
     uploadBytesInput    : null,
     downloadBytesButton : null,
     maximizeButtons     : null,
+    loadExampleButton   : null,
+    examplesModalConfirm: null,
+    examplesModalCancel : null,
+
+    examplesDropdown    : null,
 
     initialize() {
         this.loadElements();
@@ -60,6 +66,11 @@ const app = {
         this.uploadBytesInput    = document.querySelector(".upload-bytes-input");
         this.downloadBytesButton = document.querySelector(".download-bytes");
         this.maximizeButtons     = document.querySelectorAll(".maximize-button");
+        this.loadExampleButton   = document.querySelector(".load-example-button");
+        this.examplesModalConfirm= document.querySelector(".examples-modal-confirm");
+        this.examplesModalCancel = document.querySelector(".load-example-cancel");
+        this.loadExampleDialog   = document.querySelector(".load-exemple-dialog");
+        this.examplesDropdown    = document.querySelector(".examples-dropdown");
 
         this.codeEditor.value    = `PRINTS "HEY REGP!"\nHALT`;
     },
@@ -116,6 +127,18 @@ const app = {
         EventsHandler.click(Array.from(this.maximizeButtons), (button) => {
             this.toggleMaximizeContainer(button.dataset.container);
         });
+
+        EventsHandler.click(this.loadExampleButton, () => {
+            this.loadExampleDialog.showModal();
+        });
+
+        EventsHandler.change(this.examplesDropdown, () => {
+            this.examplesModalConfirm.value = this.examplesDropdown.value;
+        })
+
+        EventsHandler.handleEvent(this.loadExampleDialog, async () => {
+            await this.loadCodeExample(this.loadExampleDialog.returnValue);
+        }, "close");
     },
 
     disassembleCode() {
@@ -161,6 +184,15 @@ const app = {
         reader.onloadend = (txt) => {
             container.value = txt.target.result;
         };
+    },
+
+    async loadCodeExample(option) {
+        if (option == "cancel" || option == "default") {
+            return;
+        }
+
+        const data = await fetch("/examples/asm-examples/" + option).then(x => x.text());
+        this.codeEditor.value = data;
     },
 
     toggleMaximizeContainer(container) {
