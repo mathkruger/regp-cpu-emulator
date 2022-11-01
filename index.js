@@ -191,7 +191,7 @@ const app = {
             return;
         }
 
-        const data = await fetch("/examples/asm-examples/" + option).then(x => x.text());
+        const data = await fetch(window.location.href + "examples/asm-examples/" + option).then(x => x.text());
         this.codeEditor.value = data;
     },
 
