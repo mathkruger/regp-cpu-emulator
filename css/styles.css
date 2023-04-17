@@ -1,10 +1,10 @@
-@import url('https://css.gg/software-upload.css');
-@import url('https://css.gg/software-download.css');
-@import url('https://css.gg/play-list-search.css');
-@import url('https://css.gg/play-button.css');
-@import url('https://css.gg/file-add.css');
-@import url('https://css.gg/shape-square.css');
-@import url('https://css.gg/menu.css');
+@import url('https://unpkg.com/css.gg@2.0.0/icons/css/software-upload.css');
+@import url('https://unpkg.com/css.gg@2.0.0/icons/css/software-download.css');
+@import url('https://unpkg.com/css.gg@2.0.0/icons/css/play-list-search.css');
+@import url('https://unpkg.com/css.gg@2.0.0/icons/css/play-button.css');
+@import url('https://unpkg.com/css.gg@2.0.0/icons/css/file-add.css');
+@import url('https://unpkg.com/css.gg@2.0.0/icons/css/shape-square.css');
+@import url('https://unpkg.com/css.gg@2.0.0/icons/css/menu.css');
 
 :root {
     --background-color: #222225;
