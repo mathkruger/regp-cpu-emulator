@@ -1,4 +1,4 @@
-import { INSTRUCTIONS, REGISTERS } from "../common/instructions.js";
+import { INSTRUCTIONS, JOYSTICK, REGISTERS } from "../common/instructions.js";
 
 const ASM = {
     assemble(code) {
@@ -43,8 +43,9 @@ const ASM = {
                 else {
                     if (Object.keys(REGISTERS).includes(token)) {
                         bytes.push(REGISTERS[token]);
-                    }
-                    else {
+                    } else if (Object.keys(JOYSTICK).includes(token)) {
+                        bytes.push(JOYSTICK[token]);
+                    } else {
                         // Check strings and push all ASCII Codes for it
                         if (token.includes("\"")) {
                             const chars = token.split("");
