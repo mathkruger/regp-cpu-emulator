@@ -1,7 +1,7 @@
 import { INSTRUCTIONS, STRING_STOPPER } from "../common/instructions.js";
 
 const CPU = {
-    regs: [0, 0, 0, 0, 0],
+    regs: [0, 0, 0, 0, 0, 0, 0],
     stack: [],
     clock: 0,
     pc: 0,
