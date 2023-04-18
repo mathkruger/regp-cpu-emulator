@@ -9,11 +9,14 @@ const INSTRUCTIONS = {
     "JL": 41,
     "CALL": 42,
     "FLAG": 43,
+    "JE": 44,
     "RET": 50,
     "PRINT": 60,
     "PRINTS": 61,
     "SCAN": 62,
+    "GRKEY": 63,
     "CLS": 70,
+    "CLSC": 71,
     "PLOT": 81,
     "PLOTR": 82,
     "BKG": 83,
@@ -33,10 +36,20 @@ const REGISTERS = {
     "R4": 4
 };
 
-const STRING_STOPPER = "\"".charCodeAt();
+const JOYSTICK = {
+    "KA": 0,
+    "KU": 1,
+    "KR": 2,
+    "KD": 3,
+    "KL": 4,
+    "NOKEY": 255
+};
+
+const STRING_STOPPER = 34;
 
 export {
     INSTRUCTIONS,
     REGISTERS,
+    JOYSTICK,
     STRING_STOPPER
 };

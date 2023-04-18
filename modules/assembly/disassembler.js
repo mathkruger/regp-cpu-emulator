@@ -169,6 +169,29 @@ const DSM = {
                     });
                 break;
 
+                case INSTRUCTIONS.JE:
+                    this.pc++;
+                    var r1      = this.byteCodes[this.pc++];
+                    var r2      = this.byteCodes[this.pc++];
+                    var address = this.byteCodes[this.pc++];
+
+                    this.asmCode.push({
+                        currentPC,
+                        byte: [
+                            instruction,
+                            r1,
+                            r2,
+                            address
+                        ],
+                        asm: [
+                            "JE",
+                            this.getKeyByValue(REGISTERS, r1),
+                            this.getKeyByValue(REGISTERS, r2),
+                            address.toString()
+                        ]
+                    });
+                break;
+
                 case INSTRUCTIONS.CALL:
                     this.pc++;
                     var address = this.byteCodes[this.pc++];
@@ -255,6 +278,23 @@ const DSM = {
                     });
                 break;
 
+                case INSTRUCTIONS.GRKEY:
+                    this.pc++;
+                    var register = this.byteCodes[this.pc++];
+                    
+                    this.asmCode.push({
+                        currentPC,
+                        byte: [
+                            instruction,
+                            register
+                        ],
+                        asm: [
+                            "GRKEY",
+                            this.getKeyByValue(REGISTERS, register),
+                        ]
+                    });
+                break;
+
                 case INSTRUCTIONS.CLS:
                     this.pc++;
 
@@ -262,6 +302,24 @@ const DSM = {
                         currentPC,
                         byte: [ instruction ],
                         asm: [ "CLS" ]
+                    });
+                break;
+
+                case INSTRUCTIONS.CLSC:
+                    this.pc++;
+
+                    var color = this.readString();
+
+                    this.asmCode.push({
+                        currentPC,
+                        byte: [
+                            instruction,
+                            ...this.stringToCharCodeArray(color)
+                        ],
+                        asm: [
+                            "CLSC",
+                            color
+                        ]
                     });
                 break;
 

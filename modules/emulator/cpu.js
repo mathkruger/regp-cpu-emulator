@@ -3,7 +3,7 @@ import { INSTRUCTIONS, STRING_STOPPER } from "../common/instructions.js";
 const CPU = {
     regs: [0, 0, 0, 0, 0],
     stack: [],
-    clock: 10,
+    clock: 0,
     pc: 0,
     halted: false,
     program: [],
@@ -103,6 +103,17 @@ const CPU = {
                 }
             break;
 
+            case INSTRUCTIONS.JE:
+                this.pc++;
+                var r1      = this.program[this.pc++];
+                var r2      = this.program[this.pc++];
+                var address = this.program[this.pc++];
+
+                if (this.regs[r1] === this.regs[r2]) {
+                    this.pc = address;
+                }
+            break;
+
             case INSTRUCTIONS.CALL:
                 this.pc++;
                 var address = this.program[this.pc++];
@@ -141,9 +152,23 @@ const CPU = {
                 this.output.log(this.regs[register]);
             break;
 
+            case INSTRUCTIONS.GRKEY:
+                this.pc++;
+                var register = this.program[this.pc++];
+                var userInput = this.input.getLastJoystickPressed();
+
+                this.regs[register] = parseInt(userInput);
+            break;
+
             case INSTRUCTIONS.CLS:
                 this.pc++;
                 this.output.clear();
+            break;
+
+            case INSTRUCTIONS.CLSC:
+                this.pc++;
+                var color = this.readString();
+                this.output.clear(color);
             break;
 
             case INSTRUCTIONS.PLOT:
@@ -159,7 +184,7 @@ const CPU = {
                 this.pc++;
                 var xPos = this.regs[this.program[this.pc++]];
                 var yPos = this.regs[this.program[this.pc++]];
-                var size = this.regs[this.program[this.pc++]];
+                var size = this.program[this.pc++];
                 
                 this.output.fillRect(xPos, yPos, size);
             break;

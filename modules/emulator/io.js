@@ -1,3 +1,5 @@
+import { JOYSTICK } from "../common/instructions.js";
+
 const IO = {
     output: {
         canvasCursor: 10,
@@ -28,9 +30,9 @@ const IO = {
             this.canvasCursor = cursor + this.fontSize;
         },
 
-        clear() {
+        clear(color = null) {
             this.canvasCursor = 10;
-            this.context.fillStyle = "black";
+            this.context.fillStyle = color || "black";
             this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
         },
 
@@ -52,6 +54,8 @@ const IO = {
         inputContainer: null,
         currentPromise: null,
 
+        joystickLastPressed: 255,
+
         initialize(input) {
             this.inputContainer = input;
 
@@ -64,7 +68,43 @@ const IO = {
                     this.inputContainer.value = "";
                     resolve(value);
                 }
-            })
+            });
+
+            this.listenJoystick();
+        },
+
+        listenJoystick() {
+            this.inputContainer.addEventListener("keydown", (e) => {
+                switch(e.key.toLowerCase()) {
+                    case "z":
+                        this.joystickLastPressed = JOYSTICK.KA;
+                        break;
+                    case "arrowup":
+                        this.joystickLastPressed = JOYSTICK.KU;
+                        break;
+                    case "arrowright":
+                        this.joystickLastPressed = JOYSTICK.KR;
+                        break;
+                    case "arrowdown":
+                        this.joystickLastPressed = JOYSTICK.KD;
+                        break;
+                    case "arrowleft":
+                        this.joystickLastPressed = JOYSTICK.KL;
+                        break;
+                }
+            });
+
+            this.inputContainer.addEventListener("keyup", (e) => {
+                switch(e.key.toLowerCase()) {
+                    case "z":
+                    case "arrowup":
+                    case "arrowright":
+                    case "arrowdown":
+                    case "arrowleft":
+                        this.joystickLastPressed = JOYSTICK.NOKEY;
+                        break;
+                }
+            });
         },
 
         get() {
@@ -72,6 +112,10 @@ const IO = {
                 this.currentPromise = resolve;
             });
         },
+
+        getLastJoystickPressed() {
+            return this.joystickLastPressed;
+        }
     }
 };
 
