@@ -1,18 +1,25 @@
-; setting the colors
-BKG "#004E98"
-FRG "#3A6EA5"
+; background
+BKG 2 "black"
 
+; player x
 MOVV R1 100
+
+; player y
 MOVV R2 100
-MOVV R5 10
-PLOTR R1 R2 10
+
+; player speed
+MOVV R5 1
+
+; rendering game info
 CALL .SHOW_INFO
-; R1 = x
-; R2 = y
+
+; starting the game loop
+JP .RENDER
 
 .GAMELOOP:
 GRKEY R0
 
+; if up is pressed
 MOVV R3 KU
 JE R3 R0 .MOVE_UP
 
@@ -55,20 +62,22 @@ SUB R1 R4
 JP .RENDER
 
 .DO_THING:
-BEEPV 500 261.626
+MOVV R4 1
+ADD R5 R4
 JP .RENDER
 
 .RENDER:
-CLSC "#004E98"
-PLOTR R1 R2 10
-CALL .SHOW_INFO
+CLS 1
+FRG 1 "blue"
+PLOTR 1 R1 R2 10
 MOVV R4 0
 JP .GAMELOOP
 
 .SHOW_INFO:
-PRINTS "CLICK ON DATA INPUT FIELD AND"
-PRINTS "USE ARROWS TO MOVE."
-PRINTS "PRESS Z TO BEEP."
+FRG 0 "white"
+PRINTS 0 "CLICK ON DATA INPUT FIELD AND"
+PRINTS 0 "USE ARROWS TO MOVE."
+PRINTS 0 "PRESS Z TO GO FAST."
 RET
 
 ; unreacheable

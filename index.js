@@ -50,7 +50,7 @@ const app = {
         this.codeEditor          = document.querySelector(".code-editor");
         this.byteCodesEditor     = document.querySelector(".bytecodes-editor");
         this.disassembleResult   = document.querySelector(".disassemble-result");
-        this.terminal            = document.getElementsByTagName("canvas")[0];
+        this.terminal            = document.querySelectorAll("canvas.results");
         this.terminalInput       = document.querySelector(".terminal-input");
 
         this.assembleButton      = document.querySelector(".assemble");
@@ -161,7 +161,9 @@ const app = {
     runCode() {
         const bytes = this.byteCodesEditor.value.split(",").map(x => parseInt(x));
 
-        IO.output.clear();
+        IO.output.clear(0);
+        IO.output.clear(1);
+        IO.output.clear(2);
 
         CPU.load(bytes);
         CPU.run();

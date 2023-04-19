@@ -5,48 +5,56 @@ const IO = {
         canvasCursor: 10,
         fontSize: 14,
         font: "Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,serif",
-        color: "#33cf04",
-        canvas: null,
-        context: null,
+        colors: ["#33cf04", "#33cf04", "#33cf04"],
+        canvas: [null, null, null],
+        contexts: [null, null, null],
 
-        initialize(canvas) {
-            this.canvas = canvas;
-            this.context = this.canvas.getContext("2d");
+        initialize(layers) {
+            this.canvas = Array.from(layers);
+            this.contexts = this.canvas.map(x => x.getContext("2d"));
             this.canvasCursor = 10;
+            this.colors = ["#33cf04", "#33cf04", "#33cf04"];
+
+            console.log(this.canvas, this.contexts);
         },
 
-        log(result) {
+        log(result, layer = 0) {
             let cursor = this.canvasCursor;
     
-            if (cursor > this.canvas.height) {
+            if (cursor > this.canvas[layer].height) {
                 cursor = 10;
                 this.clear();
             }
     
-            this.context.font = this.fontSize + this.font;
-            this.context.fillStyle = this.color;
-            this.context.fillText(result, 5, cursor);
+            this.contexts[layer].font = this.fontSize + this.font;
+            this.contexts[layer].fillStyle = this.colors[layer];
+            this.contexts[layer].fillText(result, 5, cursor);
     
             this.canvasCursor = cursor + this.fontSize;
         },
 
-        clear(color = null) {
+        clear(layer = 0) {
             this.canvasCursor = 10;
-            this.context.fillStyle = color || "black";
-            this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            this.contexts[layer].clearRect(0, 0, this.canvas[layer].width, this.canvas[layer].height);
         },
 
-        fillRect(x, y, size = null, color = null) {
-            this.context.fillStyle = color ? color : this.color;
-            this.context.fillRect(x, y, size ? size : this.canvas.width, size ? size : this.canvas.height);
+        clearWithColor(color, layer = 0) {
+            this.contexts[layer].fillStyle = color;
+            this.contexts[layer].fillRect(0, 0, this.canvas[layer].width, this.canvas[layer].height);
         },
 
-        fillStyle (color) {
-            this.color = color;
+        fillRect(x, y, size = null, color = null, layer = 0) {
+            this.contexts[layer].fillStyle = color ? color : this.colors[layer];
+            this.contexts[layer].fillRect(x, y, size ? size : this.canvas[layer].width, size ? size : this.canvas[layer].height);
         },
 
-        error (message) {
-            this.canvas.value = "ERRO: " + message;
+        fillStyle (color, layer = 0) {
+            this.colors[layer] = color;
+        },
+
+        error (message, layer) {
+            this.fillStyle("red", layer);
+            this.log("!!!!! ERROR: " + message, layer);
         }
     },
     
@@ -54,7 +62,7 @@ const IO = {
         inputContainer: null,
         currentPromise: null,
 
-        joystickLastPressed: 255,
+        joystickLastPressed: JOYSTICK.NOKEY,
 
         initialize(input) {
             this.inputContainer = input;

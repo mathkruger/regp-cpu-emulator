@@ -24,13 +24,11 @@ const CPU = {
     },
 
     reset() {
-        this.regs      = [0, 0, 0, 0];
+        this.regs      = [0, 0, 0, 0, 0, 0, 0];
         this.stack     = [];
         this.pc        = 0;
         this.halted    = false;
         this.program   = [];
-        this.canvas    = null;
-        this.canvasCtx = null;
     },
 
     async run() {
@@ -134,14 +132,16 @@ const CPU = {
 
             case INSTRUCTIONS.PRINT:
                 this.pc++;
+                var layer    = this.program[this.pc++];
                 var register = this.program[this.pc++];
-                this.output.log(this.regs[register]);
+                this.output.log(this.regs[register], layer);
             break;
 
             case INSTRUCTIONS.PRINTS:
                 this.pc++;
-                var text = this.readString();
-                this.output.log(text);
+                var layer = this.program[this.pc++];
+                var text  = this.readString();
+                this.output.log(text, layer);
             break;
 
             case INSTRUCTIONS.SCAN:
@@ -162,45 +162,53 @@ const CPU = {
 
             case INSTRUCTIONS.CLS:
                 this.pc++;
-                this.output.clear();
+                var layer = this.program[this.pc++];
+                this.output.clear(layer);
             break;
 
             case INSTRUCTIONS.CLSC:
                 this.pc++;
+                var layer = this.program[this.pc++];
                 var color = this.readString();
-                this.output.clear(color);
+                this.output.clearWithColor(color, layer);
             break;
 
             case INSTRUCTIONS.PLOT:
                 this.pc++;
+                var layer = this.program[this.pc++];
                 var xPos = this.program[this.pc++];
                 var yPos = this.program[this.pc++];
                 var size = this.program[this.pc++];
                 
-                this.output.fillRect(xPos, yPos, size);
+                this.output.fillRect(xPos, yPos, size, null, layer);
             break;
 
             case INSTRUCTIONS.PLOTR:
                 this.pc++;
+                var layer = this.program[this.pc++];
                 var xPos = this.regs[this.program[this.pc++]];
                 var yPos = this.regs[this.program[this.pc++]];
                 var size = this.program[this.pc++];
+
+                console.log(layer, xPos, yPos);
                 
-                this.output.fillRect(xPos, yPos, size);
+                this.output.fillRect(xPos, yPos, size, null, layer);
             break;
 
             case INSTRUCTIONS.BKG:
                 this.pc++;
+                var layer = this.program[this.pc++];
                 var color = this.readString();
 
-                this.output.fillRect(0, 0, null, color);
+                this.output.fillRect(0, 0, null, color, layer);
             break;
 
             case INSTRUCTIONS.FRG:
                 this.pc++;
+                var layer = this.program[this.pc++];
                 var color = this.readString();
 
-                this.output.fillStyle(color);
+                this.output.fillStyle(color, layer);
             break;
 
             case INSTRUCTIONS.BEEPV:
@@ -233,7 +241,7 @@ const CPU = {
             break;
 
             default:
-                console.error("Instruction not recognized: " + instr);
+                this.output.error("Instruction not recognized: " + instr);
                 this.halted = true;
             break;
         }

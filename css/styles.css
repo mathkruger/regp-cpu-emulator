@@ -84,13 +84,35 @@
     margin-top: 20px;
 }
 
-.regp-terminal .results {
+.regp-terminal .layers {
+    position: relative;
+    width: 321px;
+    height: 201px;
+    zoom: 150%;
     display: block;
     margin: 0 auto;
     border: 1px solid;
     margin-bottom: 1rem;
-    background: black;
-    zoom: 150%;
+}
+
+.regp-terminal .layers .results {
+    background: transparent;
+
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.regp-terminal .layers .results.top {
+    z-index: 3;
+}
+
+.regp-terminal .layers .results.middle {
+    z-index: 2;
+}
+
+.regp-terminal .layers .results.bottom {
+    z-index: 1;
 }
 
 .app-container {
