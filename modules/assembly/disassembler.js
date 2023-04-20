@@ -229,16 +229,19 @@ const DSM = {
 
                 case INSTRUCTIONS.PRINT:
                     this.pc++;
+                    var layer    = this.byteCodes[this.pc++];
                     var register = this.byteCodes[this.pc++];
 
                     this.asmCode.push({
                         currentPC,
                         byte: [
                             instruction,
+                            layer,
                             register
                         ],
                         asm: [
                             "PRINT",
+                            layer.toString(),
                             this.getKeyByValue(REGISTERS, register),
                         ]
                     });
@@ -246,16 +249,19 @@ const DSM = {
 
                 case INSTRUCTIONS.PRINTS:
                     this.pc++;
+                    var layer = this.byteCodes[this.pc++];
                     var text = this.readString();
                     
                     this.asmCode.push({
                         currentPC,
                         byte: [
                             instruction,
+                            layer,
                             ...this.stringToCharCodeArray(text)
                         ],
                         asm: [
                             "PRINTS",
+                            layer.toString(),
                             text
                         ]
                     });
@@ -297,27 +303,37 @@ const DSM = {
 
                 case INSTRUCTIONS.CLS:
                     this.pc++;
+                    var layer = this.byteCodes[this.pc++];
 
                     this.asmCode.push({
                         currentPC,
-                        byte: [ instruction ],
-                        asm: [ "CLS" ]
+                        byte: [
+                            instruction,
+                            layer
+                        ],
+                        asm: [
+                            "CLS",
+                            layer.toString(),
+                        ]
                     });
                 break;
 
                 case INSTRUCTIONS.CLSC:
                     this.pc++;
 
+                    var layer = this.byteCodes[this.pc++];
                     var color = this.readString();
 
                     this.asmCode.push({
                         currentPC,
                         byte: [
                             instruction,
+                            layer,
                             ...this.stringToCharCodeArray(color)
                         ],
                         asm: [
                             "CLSC",
+                            layer.toString(),
                             color
                         ]
                     });
@@ -326,6 +342,7 @@ const DSM = {
                 case INSTRUCTIONS.PLOT:
                     this.pc++;
 
+                    var layer = this.byteCodes[this.pc++];
                     var xPos = this.byteCodes[this.pc++];
                     var yPos = this.byteCodes[this.pc++];
                     var size = this.byteCodes[this.pc++];
@@ -334,12 +351,14 @@ const DSM = {
                         currentPC,
                         byte: [
                             instruction,
+                            layer,
                             xPos,
                             yPos,
                             size
                         ],
                         asm: [
                             "PLOT",
+                            layer.toString(),
                             xPos.toString(),
                             yPos.toString(),
                             size.toString(),
@@ -350,6 +369,7 @@ const DSM = {
                 case INSTRUCTIONS.PLOTR:
                     this.pc++;
 
+                    var layer = this.byteCodes[this.pc++];
                     var xPos = this.byteCodes[this.pc++];
                     var yPos = this.byteCodes[this.pc++];
                     var size = this.byteCodes[this.pc++];
@@ -358,12 +378,14 @@ const DSM = {
                         currentPC,
                         byte: [
                             instruction,
+                            layer,
                             xPos,
                             yPos,
                             size
                         ],
                         asm: [
                             "PLOTR",
+                            layer.toString(),
                             this.getKeyByValue(REGISTERS, xPos),
                             this.getKeyByValue(REGISTERS, yPos),
                             this.getKeyByValue(REGISTERS, size),
@@ -374,16 +396,19 @@ const DSM = {
                 case INSTRUCTIONS.BKG:
                     this.pc++;
 
+                    var layer = this.byteCodes[this.pc++];
                     var color = this.readString();
                     
                     this.asmCode.push({
                         currentPC,
                         byte: [
                             instruction,
+                            layer,
                             ...this.stringToCharCodeArray(color)
                         ],
                         asm: [
                             "BKG",
+                            layer.toString(),
                             color
                         ]
                     });
@@ -392,16 +417,19 @@ const DSM = {
                 case INSTRUCTIONS.FRG:
                     this.pc++;
 
+                    var layer = this.byteCodes[this.pc++];
                     var color = this.readString();
                     
                     this.asmCode.push({
                         currentPC,
                         byte: [
                             instruction,
+                            layer,
                             ...this.stringToCharCodeArray(color)
                         ],
                         asm: [
                             "FRG",
+                            layer.toString(),
                             color
                         ]
                     });
