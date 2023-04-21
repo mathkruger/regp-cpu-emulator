@@ -1,4 +1,4 @@
-import { INSTRUCTIONS, JOYSTICK, REGISTERS } from "../common/instructions.js";
+import { INSTRUCTIONS, JOYSTICK } from "../common/instructions.js";
 
 const ASM = {
     assemble(code) {
@@ -8,7 +8,7 @@ const ASM = {
 
     getTokens(code) {
         var lines = code.split(/\r?\n/);
-        
+
         for (let index = lines.length - 1; index >= 0; index--) {
             const element = lines[index].trim();
             if (!element || element.startsWith(";")) {
@@ -36,13 +36,13 @@ const ASM = {
                     }
 
                     // Checks if it's a flag definition, then add the FLAG instruction
-                    else if (token.startsWith(".") && token.includes(":")){
+                    else if (token.startsWith(".") && token.includes(":")) {
                         bytes.push(INSTRUCTIONS.FLAG);
                     }
                 }
                 else {
-                    if (Object.keys(REGISTERS).includes(token)) {
-                        bytes.push(REGISTERS[token]);
+                    if (this.isTokenARegister(token)) {
+                        bytes.push(parseInt(token.replace("R", "")));
                     } else if (Object.keys(JOYSTICK).includes(token)) {
                         bytes.push(JOYSTICK[token]);
                     } else {
@@ -52,7 +52,7 @@ const ASM = {
                             const charCodes = chars.map(x => x.charCodeAt());
                             bytes.push(...charCodes);
                         }
-                        
+
                         // Check if its a flag call, find its position and push it,
                         // counting the strings lenghts as well
                         else if (token.startsWith(".") && !token.includes(":")) {
@@ -87,6 +87,15 @@ const ASM = {
         });
 
         return bytes;
+    },
+
+    isTokenARegister(token) {
+        if (token.startsWith("R") &&
+            !isNaN(token.replace("R", ""))) {
+            return true;
+        }
+
+        return false;
     }
 };
 

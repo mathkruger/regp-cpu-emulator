@@ -76,6 +76,10 @@ const IO = {
                     this.inputContainer.value = "";
                     resolve(value);
                 }
+
+                if (this.currentPromise === null) {
+                    this.inputContainer.value = "";
+                }
             });
 
             this.listenJoystick();
