@@ -1,4 +1,4 @@
-import { INSTRUCTIONS, STRING_STOPPER } from "../common/instructions.js";
+import { INSTRUCTIONS, STRING_STOPPER, TYPES } from "../common/instructions.js";
 
 const CPU = {
     regs: [],
@@ -54,8 +54,16 @@ const CPU = {
 
             case INSTRUCTIONS.MOVV:
                 this.pc++;
+                var type                       = this.program[this.pc++];
                 var registerDestination        = this.program[this.pc++];
-                var value                      = this.program[this.pc++];
+                var value = null;
+
+                if (type === TYPES.INT) {
+                    value = this.program[this.pc++];
+                } else if (type === TYPES.STR) {
+                    value = this.readString();
+                }
+
                 this.regs[registerDestination] = value;
             break;
             
@@ -146,9 +154,17 @@ const CPU = {
 
             case INSTRUCTIONS.SCAN:
                 this.pc++;
+                var type = this.program[this.pc++];
                 var register = this.program[this.pc++];
                 var userInput = await this.input.get();
-                this.regs[register] = parseInt(userInput);
+
+                if (type === TYPES.INT) {
+                    userInput = parseInt(userInput);
+                } else if (type === TYPES.STR) {
+                    userInput = userInput.toString().toUpperCase();
+                }
+
+                this.regs[register] = userInput;
                 this.output.log(this.regs[register]);
             break;
 

@@ -28,13 +28,9 @@ const INSTRUCTIONS = {
 };
 
 
-const REGISTERS = {
-    "R0": 0,
-    "R1": 1,
-    "R2": 2,
-    "R3": 3,
-    "R4": 4,
-    "R5": 5,
+const TYPES = {
+    "INT": 0,
+    "STR": 1,
 };
 
 const JOYSTICK = {
@@ -50,7 +46,7 @@ const STRING_STOPPER = 34;
 
 export {
     INSTRUCTIONS,
-    REGISTERS,
+    TYPES,
     JOYSTICK,
     STRING_STOPPER
 };

@@ -1,4 +1,4 @@
-import { INSTRUCTIONS, REGISTERS, STRING_STOPPER } from "../common/instructions.js";
+import { INSTRUCTIONS, STRING_STOPPER, TYPES } from "../common/instructions.js";
 
 const DSM = {
     pc: 0,
@@ -29,27 +29,38 @@ const DSM = {
                         ],
                         asm: [
                             "MOVR",
-                            this.getKeyByValue(REGISTERS, registerDestination),
-                            this.getKeyByValue(REGISTERS, registerSource),
+                            this.getRegisterName(registerDestination),
+                            this.getRegisterName(registerSource),
                         ]
                     });
                 break;
 
                 case INSTRUCTIONS.MOVV:
                     this.pc++;
+                    var type                = this.byteCodes[this.pc++];
                     var registerDestination = this.byteCodes[this.pc++];
-                    var value               = this.byteCodes[this.pc++];
+                    var value = null;
+                    var isString = false;
+
+                    if (type === TYPES.INT) {
+                        value = this.byteCodes[this.pc++];
+                    } else if (type === TYPES.STR) {
+                        value = this.readString();
+                        isString = true;
+                    }
 
                     this.asmCode.push({
                         currentPC,
                         byte: [
                             instruction,
+                            type,
                             registerDestination,
-                            value
+                            ...(isString ? this.stringToCharCodeArray(value) : [value]),
                         ],
                         asm: [
                             "MOVV",
-                            this.getKeyByValue(REGISTERS, registerDestination),
+                            this.getTypeName(type),
+                            this.getRegisterName(registerDestination),
                             value.toString(),
                         ]
                     });
@@ -69,8 +80,8 @@ const DSM = {
                         ],
                         asm: [
                             "ADD",
-                            this.getKeyByValue(REGISTERS, registerDestination),
-                            this.getKeyByValue(REGISTERS, registerSource),
+                            this.getRegisterName(registerDestination),
+                            this.getRegisterName(registerSource),
                         ]
                     });
                 break;
@@ -89,8 +100,8 @@ const DSM = {
                         ],
                         asm: [
                             "SUB",
-                            this.getKeyByValue(REGISTERS, registerDestination),
-                            this.getKeyByValue(REGISTERS, registerSource),
+                            this.getRegisterName(registerDestination),
+                            this.getRegisterName(registerSource),
                         ]
                     });
                 break;
@@ -107,7 +118,7 @@ const DSM = {
                         ],
                         asm: [
                             "PUSH",
-                            this.getKeyByValue(REGISTERS, registerSource),
+                            this.getRegisterName(registerSource),
                         ]
                     });
                 break;
@@ -124,7 +135,7 @@ const DSM = {
                         ],
                         asm: [
                             "POP",
-                            this.getKeyByValue(REGISTERS, registerDestination),
+                            this.getRegisterName(registerDestination),
                         ]
                     });
                 break;
@@ -162,8 +173,8 @@ const DSM = {
                         ],
                         asm: [
                             "JL",
-                            this.getKeyByValue(REGISTERS, r1),
-                            this.getKeyByValue(REGISTERS, r2),
+                            this.getRegisterName(r1),
+                            this.getRegisterName(r2),
                             address.toString()
                         ]
                     });
@@ -185,8 +196,8 @@ const DSM = {
                         ],
                         asm: [
                             "JE",
-                            this.getKeyByValue(REGISTERS, r1),
-                            this.getKeyByValue(REGISTERS, r2),
+                            this.getRegisterName(r1),
+                            this.getRegisterName(r2),
                             address.toString()
                         ]
                     });
@@ -242,7 +253,7 @@ const DSM = {
                         asm: [
                             "PRINT",
                             layer.toString(),
-                            this.getKeyByValue(REGISTERS, register),
+                            this.getRegisterName(register),
                         ]
                     });
                 break;
@@ -269,17 +280,20 @@ const DSM = {
 
                 case INSTRUCTIONS.SCAN:
                     this.pc++;
+                    var type     = this.byteCodes[this.pc++];
                     var register = this.byteCodes[this.pc++];
                     
                     this.asmCode.push({
                         currentPC,
                         byte: [
                             instruction,
+                            type,
                             register
                         ],
                         asm: [
                             "SCAN",
-                            this.getKeyByValue(REGISTERS, register),
+                            this.getTypeName(type),
+                            this.getRegisterName(register),
                         ]
                     });
                 break;
@@ -296,7 +310,7 @@ const DSM = {
                         ],
                         asm: [
                             "GRKEY",
-                            this.getKeyByValue(REGISTERS, register),
+                            this.getRegisterName(register),
                         ]
                     });
                 break;
@@ -386,9 +400,9 @@ const DSM = {
                         asm: [
                             "PLOTR",
                             layer.toString(),
-                            this.getKeyByValue(REGISTERS, xPos),
-                            this.getKeyByValue(REGISTERS, yPos),
-                            this.getKeyByValue(REGISTERS, size),
+                            this.getRegisterName(xPos),
+                            this.getRegisterName(yPos),
+                            this.getRegisterName(size),
                         ]
                     });
                 break;
@@ -471,8 +485,8 @@ const DSM = {
                         ],
                         asm: [
                             "BEEPR",
-                            this.getKeyByValue(REGISTERS, duration),
-                            this.getKeyByValue(REGISTERS, frequency)
+                            this.getRegisterName(duration),
+                            this.getRegisterName(frequency)
                         ]
                     });
                 break;
@@ -509,9 +523,13 @@ const DSM = {
         return this.format();
     },
 
-    getKeyByValue(obj, value) {
-        return Object.keys(obj)
-        .find(key => obj[key] === value);
+    getRegisterName(value) {
+        return "R" + value;
+    },
+
+    getTypeName(type) {
+        return Object.keys(TYPES)
+        .find(key => TYPES[key] === type);
     },
 
     readString() {

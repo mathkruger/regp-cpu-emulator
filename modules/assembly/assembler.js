@@ -1,4 +1,4 @@
-import { INSTRUCTIONS, JOYSTICK } from "../common/instructions.js";
+import { INSTRUCTIONS, JOYSTICK, TYPES } from "../common/instructions.js";
 
 const ASM = {
     assemble(code) {
@@ -45,6 +45,8 @@ const ASM = {
                         bytes.push(parseInt(token.replace("R", "")));
                     } else if (Object.keys(JOYSTICK).includes(token)) {
                         bytes.push(JOYSTICK[token]);
+                    } else if (Object.keys(TYPES).includes(token)) {
+                        bytes.push(TYPES[token]);
                     } else {
                         // Check strings and push all ASCII Codes for it
                         if (token.includes("\"")) {
