@@ -72,7 +72,7 @@ const app = {
         this.loadExampleDialog   = document.querySelector(".load-exemple-dialog");
         this.examplesDropdown    = document.querySelector(".examples-dropdown");
 
-        this.codeEditor.value    = `PRINTS "HEY REGP!"\nHALT`;
+        this.codeEditor.value    = `PRINTS 0 "HEY REGP!"\nHALT`;
     },
 
     listenEvents() {
